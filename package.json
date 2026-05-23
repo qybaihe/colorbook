@@ -1,7 +1,7 @@
 {
   "name": "colorbook",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "北京中轴入局：AI 城市时空棋局横屏桌游原型",
   "author": "qybaihe",
   "type": "module",
@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "desktop:build": "npm run build && electron-builder",
+    "desktop:build": "npm run build && electron-builder --publish never",
     "lint": "eslint .",
     "preview": "vite preview"
   },
