@@ -1,0 +1,4413 @@
+{
+  "schemaVersion": "beijing-board-flow-spec.v1",
+  "generatedAt": "2026-05-23T17:51:50.831Z",
+  "sourceDocuments": [
+    "/docs/BEIJING_BOARD_TILE_CLICK_FLOWS.md",
+    "/docs/BEIJING_INTERACTION_RULES.md",
+    "/time-chess-react/src/data/boardTrack.ts",
+    "/time-chess-react/src/data/gameCards.ts"
+  ],
+  "access": {
+    "localFile": "/Users/baihe/Documents/bohack/time-chess-react/public/assets/beijing/board-tile-flow-spec.json",
+    "devServerUrl": "http://127.0.0.1:5173/assets/beijing/board-tile-flow-spec.json"
+  },
+  "designDecision": {
+    "boardSourceOfTruth": "Use current local code layout: 6x8 board with 24 perimeter cells, so horizontal sides have 6 buttons and vertical sides have 8 positions.",
+    "remoteDocIntegration": "Use remote document core flows, restore 起局 as a board cell, and add one new Beijing-history cell: 钟鼓定更.",
+    "duplicateOptimization": "The old duplicate “旧城回声” expression is split into “旧城短笺” for written response and “钟鼓定更” for Beijing Drum/Bell Tower timekeeping history.",
+    "referenceImagePolicy": "Use generated tile-button art directly as the clickable button image. Frontend should not overlay extra visible text on top of tile buttons.",
+    "generatedTextPolicy": "Each tile button image should contain exact short Chinese text: title plus helper. Avoid extra text.",
+    "addedPlayableTile": {
+      "id": "drum-bell-night-watch",
+      "title": "钟鼓定更",
+      "reason": "补足24格，并把北京钟鼓楼、报时制度、更夫和旧城夜声纳入玩法。"
+    }
+  },
+  "board": {
+    "layout": {
+      "columns": 6,
+      "rows": 8,
+      "perimeterCells": 24,
+      "playableCells": 24,
+      "centerMapArea": {
+        "columns": [
+          2,
+          5
+        ],
+        "rows": [
+          2,
+          7
+        ],
+        "asset": "/assets/beijing/board/axis-center-map.webp"
+      },
+      "visualTraversal": "current_code_trackCells_order_bottom_left_clockwise_6x8",
+      "implementationNote": "This JSON matches boardTrack.ts 24-cell structure: 6 bottom cells, 6 right-side middle cells, 6 top cells, 6 left-side middle cells."
+    },
+    "tiles": [
+      {
+        "slot": 1,
+        "id": "start-qianmen-entry",
+        "label": "前门入城",
+        "kind": "start",
+        "boardCell": {
+          "trackIndex": 0,
+          "visualClockwiseIndex": 0,
+          "targetLayoutIndex": 0,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 8,
+          "currentCellLabel": "前门入城",
+          "currentCellHelper": "起局",
+          "currentCellKind": "event",
+          "nodeId": "qianmen",
+          "tone": "start"
+        },
+        "buttonText": {
+          "title": "起局",
+          "helper": "身份",
+          "exactTextToRender": "起局\n身份",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "领取入城身份",
+          "plot": "城门还没打开，玩家先决定这一局用什么眼光进入北京。",
+          "taskGoal": "选择建筑观察者、街声收集者或故事追问者，决定本局任务语气。",
+          "playerActions": [
+            "选择一个入城身份",
+            "系统把身份写入本局状态"
+          ],
+          "primaryAction": "选择身份",
+          "fallbackAction": "随机身份",
+          "successText": "入城印章已点亮。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "gate",
+            "hint"
+          ],
+          "rewardCards": [
+            {
+              "id": "gate",
+              "name": "城门卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "hint",
+              "name": "提示卡",
+              "category": "utility",
+              "deck": "support"
+            }
+          ],
+          "nodeId": "qianmen"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-01-start-qianmen-entry.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-01-start-qianmen-entry.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-01-gate.png",
+            "/assets/beijing/deck/card-28-hint.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-01-start-qianmen-entry.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "起局",
+              "身份"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"起局\" as main title and \"身份\" as small subtitle. Theme: Qianmen city gate threshold, unopened central-axis route map, pawn token, three identity seals. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-01-start-qianmen-entry.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "领取入城身份"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"领取入城身份\". Scene: Qianmen city gate threshold, unopened central-axis route map, pawn token, three identity seals. Gameplay feeling: 选择建筑观察者、街声收集者或故事追问者，决定本局任务语气。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to gate, hint.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 2,
+        "id": "landmark-gate-market",
+        "label": "城门开市",
+        "kind": "landmark",
+        "boardCell": {
+          "trackIndex": 1,
+          "visualClockwiseIndex": 1,
+          "targetLayoutIndex": 1,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 2,
+          "row": 8,
+          "currentCellLabel": "城门开市",
+          "currentCellHelper": "前门",
+          "currentCellKind": "node",
+          "nodeId": "qianmen",
+          "tone": "landmark"
+        },
+        "buttonText": {
+          "title": "城门开市",
+          "helper": "掌柜",
+          "exactTextToRender": "城门开市\n掌柜",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "完成城门三问",
+          "plot": "玩家遇见清末掌柜，城门外的买卖、人流和消息开始说话。",
+          "taskGoal": "完成城门三问，领取前门牌组奖励。",
+          "playerActions": [
+            "选择一个问题追问掌柜",
+            "领取前门牌组奖励"
+          ],
+          "primaryAction": "追问掌柜",
+          "fallbackAction": "让掌柜讲一段",
+          "successText": "前门牌组奖励已领取。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "trade",
+            "qing-merchant",
+            "gate-questions",
+            "human-life",
+            "gate"
+          ],
+          "rewardCards": [
+            {
+              "id": "trade",
+              "name": "商贸卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "qing-merchant",
+              "name": "清末掌柜",
+              "category": "role",
+              "deck": "role"
+            },
+            {
+              "id": "gate-questions",
+              "name": "城门三问",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "human-life",
+              "name": "人间烟火卡",
+              "category": "clue",
+              "deck": "clue"
+            },
+            {
+              "id": "gate",
+              "name": "城门卡",
+              "category": "culture",
+              "deck": "core"
+            }
+          ],
+          "nodeId": "qianmen"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-02-landmark-gate-market.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-02-landmark-gate-market.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-02-trade.png",
+            "/assets/beijing/deck/card-36-qing-merchant.png",
+            "/assets/beijing/deck/card-14-gate-questions.png",
+            "/assets/beijing/deck/card-24-human-life.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-02-landmark-gate-market.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "城门开市",
+              "掌柜"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"城门开市\" as main title and \"掌柜\" as small subtitle. Theme: Qianmen gate market NPC theater with Qing-era shopkeeper, ledger, dialogue scroll, market street props. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-02-landmark-gate-market.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "完成城门三问"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"完成城门三问\". Scene: Qianmen gate market NPC theater with Qing-era shopkeeper, ledger, dialogue scroll, market street props. Gameplay feeling: 完成城门三问，领取前门牌组奖励。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to trade, qing-merchant, gate-questions, human-life, gate.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 3,
+        "id": "photo-gate-market",
+        "label": "拍照任务",
+        "kind": "photo",
+        "boardCell": {
+          "trackIndex": 2,
+          "visualClockwiseIndex": 2,
+          "targetLayoutIndex": 2,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 3,
+          "row": 8,
+          "currentCellLabel": "拍照任务",
+          "currentCellHelper": "取证",
+          "currentCellKind": "event",
+          "nodeId": "qianmen",
+          "tone": "photo"
+        },
+        "buttonText": {
+          "title": "拍照任务",
+          "helper": "街面",
+          "exactTextToRender": "拍照任务\n街面",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "拍城门/招牌/人流",
+          "plot": "前门的热闹把货物、消息和脚步都换成城市记忆。",
+          "taskGoal": "拍城门、招牌、铺面或人流，生成观察卡。",
+          "playerActions": [
+            "拍摄或上传照片",
+            "选择画面元素"
+          ],
+          "primaryAction": "拍街面",
+          "fallbackAction": "手选元素",
+          "successText": "观察线索已获得。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "human-life",
+            "photographer-eye",
+            "trade"
+          ],
+          "rewardCards": [
+            {
+              "id": "human-life",
+              "name": "人间烟火卡",
+              "category": "clue",
+              "deck": "clue"
+            },
+            {
+              "id": "photographer-eye",
+              "name": "摄影师之眼",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "trade",
+              "name": "商贸卡",
+              "category": "culture",
+              "deck": "core"
+            }
+          ],
+          "nodeId": "qianmen"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-03-photo-gate-market.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-03-photo-gate-market.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-24-human-life.png",
+            "/assets/beijing/deck/card-17-photographer-eye.png",
+            "/assets/beijing/deck/card-02-trade.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-03-photo-gate-market.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "拍照任务",
+              "街面"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"拍照任务\" as main title and \"街面\" as small subtitle. Theme: Qianmen market street, gate, signboards, crowd flow, photo evidence cards. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-03-photo-gate-market.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "拍城门/招牌/人流"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"拍城门/招牌/人流\". Scene: Qianmen market street, gate, signboards, crowd flow, photo evidence cards. Gameplay feeling: 拍城门、招牌、铺面或人流，生成观察卡。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to human-life, photographer-eye, trade.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 4,
+        "id": "landmark-axis-view",
+        "label": "中轴取景",
+        "kind": "landmark",
+        "boardCell": {
+          "trackIndex": 3,
+          "visualClockwiseIndex": 3,
+          "targetLayoutIndex": 3,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 4,
+          "row": 8,
+          "currentCellLabel": "中轴取景",
+          "currentCellHelper": "对称",
+          "currentCellKind": "node",
+          "nodeId": "axis",
+          "tone": "landmark"
+        },
+        "buttonText": {
+          "title": "中轴取景",
+          "helper": "对称",
+          "exactTextToRender": "中轴取景\n对称",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "确认中轴线索",
+          "plot": "一条线让空间有方向，也让行走变成入局。",
+          "taskGoal": "拍一张对称构图，或选择最明显的中轴线索。",
+          "playerActions": [
+            "拍对称构图",
+            "或选择中轴元素"
+          ],
+          "primaryAction": "确认线索",
+          "fallbackAction": "选择中轴元素",
+          "successText": "中轴观察结论已生成。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "axis",
+            "city-craftsman",
+            "symmetry",
+            "axis-scroll"
+          ],
+          "rewardCards": [
+            {
+              "id": "axis",
+              "name": "秩序卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "city-craftsman",
+              "name": "营城匠师",
+              "category": "role",
+              "deck": "role"
+            },
+            {
+              "id": "symmetry",
+              "name": "对称卡",
+              "category": "clue",
+              "deck": "clue"
+            },
+            {
+              "id": "axis-scroll",
+              "name": "中轴长卷",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": "axis"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-04-landmark-axis-view.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-04-landmark-axis-view.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-03-order.png",
+            "/assets/beijing/deck/card-37-city-craftsman.png",
+            "/assets/beijing/deck/card-21-symmetry.png",
+            "/assets/beijing/deck/card-15-axis-scroll.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-04-landmark-axis-view.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "中轴取景",
+              "对称"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"中轴取景\" as main title and \"对称\" as small subtitle. Theme: Beijing central axis view, symmetry guides, craftsman role card, perspective lines. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-04-landmark-axis-view.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "确认中轴线索"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"确认中轴线索\". Scene: Beijing central axis view, symmetry guides, craftsman role card, perspective lines. Gameplay feeling: 拍一张对称构图，或选择最明显的中轴线索。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to axis, city-craftsman, symmetry, axis-scroll.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 5,
+        "id": "dice-first-event",
+        "label": "时空骰",
+        "kind": "dice",
+        "boardCell": {
+          "trackIndex": 4,
+          "visualClockwiseIndex": 4,
+          "targetLayoutIndex": 4,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 5,
+          "row": 8,
+          "currentCellLabel": "时空骰",
+          "currentCellHelper": "掷骰",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "dice"
+        },
+        "buttonText": {
+          "title": "时空骰",
+          "helper": "事件",
+          "exactTextToRender": "时空骰\n事件",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "掷骰抽事件",
+          "plot": "骰子不决定去哪，只决定这一格用什么语气发生。",
+          "taskGoal": "从时辰、风物、来信、市声、转折、回声六类事件中抽取一个。",
+          "playerActions": [
+            "点击掷骰",
+            "绑定事件到下一次剧场"
+          ],
+          "primaryAction": "掷骰",
+          "fallbackAction": "抽事件卡",
+          "successText": "事件已绑定。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "bind_event_mood_to_next_scene"
+          ],
+          "rewardCardIds": [
+            "time-event",
+            "object-event",
+            "letter-event",
+            "sound-event",
+            "turn-event",
+            "echo-event"
+          ],
+          "rewardCards": [
+            {
+              "id": "time-event",
+              "name": "时辰事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "object-event",
+              "name": "风物事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "letter-event",
+              "name": "来信事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "sound-event",
+              "name": "市声事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "turn-event",
+              "name": "转折事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "echo-event",
+              "name": "回声事件卡",
+              "category": "event",
+              "deck": "event"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-05-dice-first-event.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-05-dice-first-event.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-08-time-event.png",
+            "/assets/beijing/deck/card-09-object-event.png",
+            "/assets/beijing/deck/card-10-letter-event.png",
+            "/assets/beijing/deck/card-11-sound-event.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-05-dice-first-event.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "时空骰",
+              "事件"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"时空骰\" as main title and \"事件\" as small subtitle. Theme: six-faced time dice, symbolic event cards, route token on old map. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-05-dice-first-event.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "掷骰抽事件"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"掷骰抽事件\". Scene: six-faced time dice, symbolic event cards, route token on old map. Gameplay feeling: 从时辰、风物、来信、市声、转折、回声六类事件中抽取一个。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to time-event, object-event, letter-event, sound-event, turn-event, echo-event.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 6,
+        "id": "sound-street",
+        "label": "市声任务",
+        "kind": "sound",
+        "boardCell": {
+          "trackIndex": 5,
+          "visualClockwiseIndex": 5,
+          "targetLayoutIndex": 5,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 8,
+          "currentCellLabel": "市声任务",
+          "currentCellHelper": "听见",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "sound"
+        },
+        "buttonText": {
+          "title": "市声任务",
+          "helper": "街声",
+          "exactTextToRender": "市声任务\n街声",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "录 10 秒街声",
+          "plot": "北京不只在画面里，也在脚步、人声和风里。",
+          "taskGoal": "录 10 秒声音，或手选人声、车铃、脚步、风声。",
+          "playerActions": [
+            "点击录音按钮",
+            "或选择声音标签"
+          ],
+          "primaryAction": "开始录音",
+          "fallbackAction": "我现在不方便录音",
+          "successText": "声音线索已生成。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "sound-event",
+            "bell"
+          ],
+          "rewardCards": [
+            {
+              "id": "sound-event",
+              "name": "市声事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "bell",
+              "name": "钟声卡",
+              "category": "clue",
+              "deck": "clue"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-06-sound-street.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-06-sound-street.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-11-sound-event.png",
+            "/assets/beijing/deck/card-23-bell.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-06-sound-street.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "市声任务",
+              "街声"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"市声任务\" as main title and \"街声\" as small subtitle. Theme: old street corner, ink ribbon sound waves, microphone token, paper task card. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-06-sound-street.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "录 10 秒街声"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"录 10 秒街声\". Scene: old street corner, ink ribbon sound waves, microphone token, paper task card. Gameplay feeling: 录 10 秒声音，或手选人声、车铃、脚步、风声。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to sound-event, bell.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 7,
+        "id": "fate-first-turn",
+        "label": "命运格",
+        "kind": "fate",
+        "boardCell": {
+          "trackIndex": 6,
+          "visualClockwiseIndex": 6,
+          "targetLayoutIndex": 6,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 7,
+          "currentCellLabel": "命运格",
+          "currentCellHelper": "转折",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "fate"
+        },
+        "buttonText": {
+          "title": "命运格",
+          "helper": "翻牌",
+          "exactTextToRender": "命运格\n翻牌",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "翻开命运牌",
+          "plot": "刚入局时，路线给玩家一个小变化。",
+          "taskGoal": "随机得到顺风、绕路、加速或停留，决定下一段任务节奏。",
+          "playerActions": [
+            "点击翻开命运牌",
+            "读取本轮状态"
+          ],
+          "primaryAction": "翻牌",
+          "fallbackAction": "安全路线",
+          "successText": "本轮状态已生效。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "set_route_modifier"
+          ],
+          "rewardCardIds": [
+            "time-boost",
+            "safety",
+            "stamina-supply"
+          ],
+          "rewardCards": [
+            {
+              "id": "time-boost",
+              "name": "时光加成卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "safety",
+              "name": "安全卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "stamina-supply",
+              "name": "体力补给卡",
+              "category": "utility",
+              "deck": "support"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-07-fate-first-turn.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-07-fate-first-turn.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-30-time-boost.png",
+            "/assets/beijing/deck/card-32-safety.png",
+            "/assets/beijing/deck/card-34-stamina-supply.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-07-fate-first-turn.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "命运格",
+              "翻牌"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"命运格\" as main title and \"翻牌\" as small subtitle. Theme: tabletop map, compass, four face-down fate cards, route fork marker. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-07-fate-first-turn.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "翻开命运牌"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"翻开命运牌\". Scene: tabletop map, compass, four face-down fate cards, route fork marker. Gameplay feeling: 随机得到顺风、绕路、加速或停留，决定下一段任务节奏。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to time-boost, safety, stamina-supply.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 8,
+        "id": "echo-card-unlock",
+        "label": "回声卡",
+        "kind": "echo",
+        "boardCell": {
+          "trackIndex": 7,
+          "visualClockwiseIndex": 7,
+          "targetLayoutIndex": 7,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 6,
+          "currentCellLabel": "回声卡",
+          "currentCellHelper": "留言",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "echo"
+        },
+        "buttonText": {
+          "title": "回声卡",
+          "helper": "存句",
+          "exactTextToRender": "回声卡\n存句",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "翻开回声事件卡",
+          "plot": "城市把玩家刚才的观察折成一张可带走的回声卡。",
+          "taskGoal": "选择一句已有留言或写一句新回声。",
+          "playerActions": [
+            "翻开回声卡",
+            "选择或输入一句话"
+          ],
+          "primaryAction": "存入回声",
+          "fallbackAction": "使用上一句留言",
+          "successText": "回声卡进入终局牌阵。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "append_memory_line"
+          ],
+          "rewardCardIds": [
+            "echo-event",
+            "echo"
+          ],
+          "rewardCards": [
+            {
+              "id": "echo-event",
+              "name": "回声事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "echo",
+              "name": "回声卡",
+              "category": "culture",
+              "deck": "core"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-08-echo-card-unlock.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-08-echo-card-unlock.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-13-echo-event.png",
+            "/assets/beijing/deck/card-07-echo.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-08-echo-card-unlock.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "回声卡",
+              "存句"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"回声卡\" as main title and \"存句\" as small subtitle. Theme: echo event card opening, blank sentence ribbon, final card array glow. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-08-echo-card-unlock.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "翻开回声事件卡"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"翻开回声事件卡\". Scene: echo event card opening, blank sentence ribbon, final card array glow. Gameplay feeling: 选择一句已有留言或写一句新回声。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to echo-event, echo.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 9,
+        "id": "landmark-corner-tower",
+        "label": "宫城水影",
+        "kind": "landmark",
+        "boardCell": {
+          "trackIndex": 8,
+          "visualClockwiseIndex": 8,
+          "targetLayoutIndex": 8,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 5,
+          "currentCellLabel": "宫城水影",
+          "currentCellHelper": "画师",
+          "currentCellKind": "node",
+          "nodeId": "corner-tower",
+          "tone": "landmark"
+        },
+        "buttonText": {
+          "title": "宫城水影",
+          "helper": "画师",
+          "exactTextToRender": "宫城水影\n画师",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "进入画师剧场",
+          "plot": "屋檐、水面、倒影共同守住一座宫城的构图。",
+          "taskGoal": "拍或选择屋檐、水面、倒影，进入画师剧场。",
+          "playerActions": [
+            "拍/选画面元素",
+            "读取画师短独白"
+          ],
+          "primaryAction": "取景",
+          "fallbackAction": "手选元素",
+          "successText": "画师短独白已生成。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "palace",
+            "palace-painter",
+            "water-ripple",
+            "photographer-eye"
+          ],
+          "rewardCards": [
+            {
+              "id": "palace",
+              "name": "宫城卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "palace-painter",
+              "name": "宫廷画师",
+              "category": "role",
+              "deck": "role"
+            },
+            {
+              "id": "water-ripple",
+              "name": "水纹卡",
+              "category": "clue",
+              "deck": "clue"
+            },
+            {
+              "id": "photographer-eye",
+              "name": "摄影师之眼",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": "corner-tower"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-09-landmark-corner-tower.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-09-landmark-corner-tower.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-04-palace.png",
+            "/assets/beijing/deck/card-38-palace-painter.png",
+            "/assets/beijing/deck/card-22-water-ripple.png",
+            "/assets/beijing/deck/card-17-photographer-eye.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-09-landmark-corner-tower.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "宫城水影",
+              "画师"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"宫城水影\" as main title and \"画师\" as small subtitle. Theme: Forbidden City corner tower, moat reflection, painter role card, composition evidence cards. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-09-landmark-corner-tower.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "进入画师剧场"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"进入画师剧场\". Scene: Forbidden City corner tower, moat reflection, painter role card, composition evidence cards. Gameplay feeling: 拍或选择屋檐、水面、倒影，进入画师剧场。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to palace, palace-painter, water-ripple, photographer-eye.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 10,
+        "id": "hidden-missed-letter",
+        "label": "隐藏支线",
+        "kind": "branch",
+        "boardCell": {
+          "trackIndex": 9,
+          "visualClockwiseIndex": 9,
+          "targetLayoutIndex": 9,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 4,
+          "currentCellLabel": "隐藏支线",
+          "currentCellHelper": "发现",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "branch"
+        },
+        "buttonText": {
+          "title": "隐藏支线",
+          "helper": "来信",
+          "exactTextToRender": "隐藏支线\n来信",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "发现错过的来信",
+          "plot": "没有走到的地点，也能变成一封未拆开的信。",
+          "taskGoal": "选择是否收下错过的来信，并让终局承认现实路线。",
+          "playerActions": [
+            "翻开隐藏来信",
+            "选择收下或暂存"
+          ],
+          "primaryAction": "收下来信",
+          "fallbackAction": "直接收下",
+          "successText": "错过也能成局的分支已解锁。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "missed-letter",
+            "shadow"
+          ],
+          "rewardCards": [
+            {
+              "id": "missed-letter",
+              "name": "错过的来信卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "shadow",
+              "name": "影子卡",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-10-hidden-missed-letter.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-10-hidden-missed-letter.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-26-missed-letter.png",
+            "/assets/beijing/deck/card-20-shadow.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-10-hidden-missed-letter.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "隐藏支线",
+              "来信"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"隐藏支线\" as main title and \"来信\" as small subtitle. Theme: hidden letter under route board, dim paper edge, small shadow card, secret branch marker. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-10-hidden-missed-letter.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "发现错过的来信"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"发现错过的来信\". Scene: hidden letter under route board, dim paper edge, small shadow card, secret branch marker. Gameplay feeling: 选择是否收下错过的来信，并让终局承认现实路线。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to missed-letter, shadow.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 11,
+        "id": "cocreate-city-seal",
+        "label": "共创格",
+        "kind": "create",
+        "boardCell": {
+          "trackIndex": 10,
+          "visualClockwiseIndex": 10,
+          "targetLayoutIndex": 10,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 3,
+          "currentCellLabel": "共创格",
+          "currentCellHelper": "生成",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "create"
+        },
+        "buttonText": {
+          "title": "共创格",
+          "helper": "印章",
+          "exactTextToRender": "共创格\n印章",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "生成城市印章",
+          "plot": "玩家把这一局看到的东西盖成一枚自己的路线章。",
+          "taskGoal": "从城门、招牌、轴线、水面、钟声、胡同中选择 3 个元素。",
+          "playerActions": [
+            "选择 3 个城市元素",
+            "生成组合印章"
+          ],
+          "primaryAction": "选择元素",
+          "fallbackAction": "自动组合",
+          "successText": "城市印章已加入终局明信片。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "photographer-eye",
+            "axis-scroll"
+          ],
+          "rewardCards": [
+            {
+              "id": "photographer-eye",
+              "name": "摄影师之眼",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "axis-scroll",
+              "name": "中轴长卷",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-11-cocreate-city-seal.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-11-cocreate-city-seal.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-17-photographer-eye.png",
+            "/assets/beijing/deck/card-15-axis-scroll.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-11-cocreate-city-seal.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "共创格",
+              "印章"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"共创格\" as main title and \"印章\" as small subtitle. Theme: blank seal stone, ink pad, icon tiles for gate signboard axis water bell hutong. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-11-cocreate-city-seal.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "生成城市印章"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"生成城市印章\". Scene: blank seal stone, ink pad, icon tiles for gate signboard axis water bell hutong. Gameplay feeling: 从城门、招牌、轴线、水面、钟声、胡同中选择 3 个元素。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to photographer-eye, axis-scroll.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 12,
+        "id": "fate-route-choice",
+        "label": "命运格",
+        "kind": "fate",
+        "boardCell": {
+          "trackIndex": 11,
+          "visualClockwiseIndex": 11,
+          "targetLayoutIndex": 11,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 2,
+          "currentCellLabel": "命运格",
+          "currentCellHelper": "转场",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "fate"
+        },
+        "buttonText": {
+          "title": "命运格",
+          "helper": "转场",
+          "exactTextToRender": "命运格\n转场",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "选择路线转折",
+          "plot": "路线遇到转折，玩家可以继续、回溯或启用安全路线。",
+          "taskGoal": "做一次路线选择，更新本局状态。",
+          "playerActions": [
+            "选择继续/回溯/安全路线",
+            "记录选择"
+          ],
+          "primaryAction": "选择路线",
+          "fallbackAction": "安全路线",
+          "successText": "路线状态已更新。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "set_route_modifier"
+          ],
+          "rewardCardIds": [
+            "rewind",
+            "safety",
+            "time-boost"
+          ],
+          "rewardCards": [
+            {
+              "id": "rewind",
+              "name": "回溯卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "safety",
+              "name": "安全卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "time-boost",
+              "name": "时光加成卡",
+              "category": "utility",
+              "deck": "support"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-12-fate-route-choice.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-12-fate-route-choice.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-31-rewind.png",
+            "/assets/beijing/deck/card-32-safety.png",
+            "/assets/beijing/deck/card-30-time-boost.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-12-fate-route-choice.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "命运格",
+              "转场"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"命运格\" as main title and \"转场\" as small subtitle. Theme: route crossroads, rewind token, safety card, accelerated path marker. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-12-fate-route-choice.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "选择路线转折"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"选择路线转折\". Scene: route crossroads, rewind token, safety card, accelerated path marker. Gameplay feeling: 做一次路线选择，更新本局状态。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to rewind, safety, time-boost.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 13,
+        "id": "travelogue-midpoint",
+        "label": "时空游记",
+        "kind": "finale",
+        "boardCell": {
+          "trackIndex": 12,
+          "visualClockwiseIndex": 12,
+          "targetLayoutIndex": 12,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 6,
+          "row": 1,
+          "currentCellLabel": "时空游记",
+          "currentCellHelper": "终局",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "finale"
+        },
+        "buttonText": {
+          "title": "时空游记",
+          "helper": "终局",
+          "exactTextToRender": "时空游记\n终局",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "生成临时路线札记",
+          "plot": "走到中段，系统把已点亮的格子临时装订成一页路线札记。",
+          "taskGoal": "回看已经获得的卡牌和地点，生成标题候选。",
+          "playerActions": [
+            "查看路线札记",
+            "确认标题候选"
+          ],
+          "primaryAction": "生成札记",
+          "fallbackAction": "自动生成",
+          "successText": "终局游记标题候选已出现。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "axis-scroll",
+            "time-traveler"
+          ],
+          "rewardCards": [
+            {
+              "id": "axis-scroll",
+              "name": "中轴长卷",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "time-traveler",
+              "name": "时间旅人",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-13-travelogue-midpoint.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-13-travelogue-midpoint.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-15-axis-scroll.png",
+            "/assets/beijing/deck/card-19-time-traveler.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-13-travelogue-midpoint.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "时空游记",
+              "终局"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"时空游记\" as main title and \"终局\" as small subtitle. Theme: midpoint travelogue booklet, route stickers, unlocked cards, bookmark ribbon. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-13-travelogue-midpoint.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "生成临时路线札记"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"生成临时路线札记\". Scene: midpoint travelogue booklet, route stickers, unlocked cards, bookmark ribbon. Gameplay feeling: 回看已经获得的卡牌和地点，生成标题候选。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to axis-scroll, time-traveler.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 14,
+        "id": "echo-overlook-note",
+        "label": "回声格",
+        "kind": "echo",
+        "boardCell": {
+          "trackIndex": 13,
+          "visualClockwiseIndex": 13,
+          "targetLayoutIndex": 13,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 5,
+          "row": 1,
+          "currentCellLabel": "回声格",
+          "currentCellHelper": "记录",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "echo"
+        },
+        "buttonText": {
+          "title": "回声格",
+          "helper": "记录",
+          "exactTextToRender": "回声格\n记录",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "给城市层次写注释",
+          "plot": "刚刚看到的城市层次，需要一句玩家自己的解释。",
+          "taskGoal": "写一句关于近景、中景或远景的观察。",
+          "playerActions": [
+            "输入一句注释",
+            "或使用默认注释"
+          ],
+          "primaryAction": "写注释",
+          "fallbackAction": "生成默认注释",
+          "successText": "注释进入终局游记中段。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "append_memory_line"
+          ],
+          "rewardCardIds": [
+            "echo",
+            "axis-scroll"
+          ],
+          "rewardCards": [
+            {
+              "id": "echo",
+              "name": "回声卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "axis-scroll",
+              "name": "中轴长卷",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-14-echo-overlook-note.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-14-echo-overlook-note.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-07-echo.png",
+            "/assets/beijing/deck/card-15-axis-scroll.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-14-echo-overlook-note.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "回声格",
+              "记录"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"回声格\" as main title and \"记录\" as small subtitle. Theme: overlook note card over layered city map, blank annotation strip, ink pins. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-14-echo-overlook-note.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "给城市层次写注释"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"给城市层次写注释\". Scene: overlook note card over layered city map, blank annotation strip, ink pins. Gameplay feeling: 写一句关于近景、中景或远景的观察。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to echo, axis-scroll.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 15,
+        "id": "landmark-jingshan",
+        "label": "登高观城",
+        "kind": "landmark",
+        "boardCell": {
+          "trackIndex": 14,
+          "visualClockwiseIndex": 14,
+          "targetLayoutIndex": 14,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 4,
+          "row": 1,
+          "currentCellLabel": "登高观城",
+          "currentCellHelper": "三层",
+          "currentCellKind": "node",
+          "nodeId": "jingshan",
+          "tone": "landmark"
+        },
+        "buttonText": {
+          "title": "登高观城",
+          "helper": "三层",
+          "exactTextToRender": "登高观城\n三层",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "拼出城市三层画面",
+          "plot": "站高一点，街道、树影和人的脚步进入同一张长卷。",
+          "taskGoal": "选择近景、中景、远景，拼成城市三层画面。",
+          "playerActions": [
+            "选择近景/中景/远景",
+            "生成城市层次结论"
+          ],
+          "primaryAction": "拼三层",
+          "fallbackAction": "想象登高",
+          "successText": "路线回看已解锁。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "overlook",
+            "city-historian",
+            "axis-scroll"
+          ],
+          "rewardCards": [
+            {
+              "id": "overlook",
+              "name": "俯瞰卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "city-historian",
+              "name": "观城史官",
+              "category": "role",
+              "deck": "role"
+            },
+            {
+              "id": "axis-scroll",
+              "name": "中轴长卷",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": "jingshan"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-15-landmark-jingshan.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-15-landmark-jingshan.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-05-overlook.png",
+            "/assets/beijing/deck/card-39-city-historian.png",
+            "/assets/beijing/deck/card-15-axis-scroll.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-15-landmark-jingshan.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "登高观城",
+              "三层"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"登高观城\" as main title and \"三层\" as small subtitle. Theme: Jingshan overlook, layered city scroll, near trees middle palaces distant sky. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-15-landmark-jingshan.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "拼出城市三层画面"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"拼出城市三层画面\". Scene: Jingshan overlook, layered city scroll, near trees middle palaces distant sky. Gameplay feeling: 选择近景、中景、远景，拼成城市三层画面。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to overlook, city-historian, axis-scroll.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 16,
+        "id": "photo-transition",
+        "label": "拍照任务",
+        "kind": "photo",
+        "boardCell": {
+          "trackIndex": 15,
+          "visualClockwiseIndex": 15,
+          "targetLayoutIndex": 15,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 3,
+          "row": 1,
+          "currentCellLabel": "拍照任务",
+          "currentCellHelper": "构图",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "photo"
+        },
+        "buttonText": {
+          "title": "拍照任务",
+          "helper": "构图",
+          "exactTextToRender": "拍照任务\n构图",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "拍过渡构图",
+          "plot": "从旧城走向中轴，画面里要有方向和转场。",
+          "taskGoal": "拍一张有路径、远近或边界的照片。",
+          "playerActions": [
+            "拍摄或上传照片",
+            "选择现场元素"
+          ],
+          "primaryAction": "拍一张",
+          "fallbackAction": "手动选择元素",
+          "successText": "观察卡预览已生成。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "photographer-eye",
+            "symmetry"
+          ],
+          "rewardCards": [
+            {
+              "id": "photographer-eye",
+              "name": "摄影师之眼",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "symmetry",
+              "name": "对称卡",
+              "category": "clue",
+              "deck": "clue"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-16-photo-transition.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-16-photo-transition.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-17-photographer-eye.png",
+            "/assets/beijing/deck/card-21-symmetry.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-16-photo-transition.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "拍照任务",
+              "构图"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"拍照任务\" as main title and \"构图\" as small subtitle. Theme: transition composition from old city alley toward central axis, camera frame, route line. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-16-photo-transition.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "拍过渡构图"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"拍过渡构图\". Scene: transition composition from old city alley toward central axis, camera frame, route line. Gameplay feeling: 拍一张有路径、远近或边界的照片。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to photographer-eye, symmetry.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 17,
+        "id": "dice-mood-shift",
+        "label": "时空骰",
+        "kind": "dice",
+        "boardCell": {
+          "trackIndex": 16,
+          "visualClockwiseIndex": 16,
+          "targetLayoutIndex": 16,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 2,
+          "row": 1,
+          "currentCellLabel": "时空骰",
+          "currentCellHelper": "来信",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "dice"
+        },
+        "buttonText": {
+          "title": "时空骰",
+          "helper": "来信",
+          "exactTextToRender": "时空骰\n来信",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "改变下一处景点氛围",
+          "plot": "第二次掷骰，让下一处景点带上新的天气、时间或角色语气。",
+          "taskGoal": "抽取时辰、天气或来信，让后续剧场不重复。",
+          "playerActions": [
+            "点击掷骰",
+            "读取新氛围"
+          ],
+          "primaryAction": "掷骰",
+          "fallbackAction": "使用当前时间",
+          "successText": "下一场景语气已更新。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "bind_event_mood_to_next_scene"
+          ],
+          "rewardCardIds": [
+            "time-event",
+            "weather-backup"
+          ],
+          "rewardCards": [
+            {
+              "id": "time-event",
+              "name": "时辰事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "weather-backup",
+              "name": "天气兜底卡",
+              "category": "utility",
+              "deck": "support"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-17-dice-mood-shift.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-17-dice-mood-shift.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-08-time-event.png",
+            "/assets/beijing/deck/card-33-weather-backup.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-17-dice-mood-shift.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "时空骰",
+              "来信"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"时空骰\" as main title and \"来信\" as small subtitle. Theme: dice rolling through light weather and letter cards on route map. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-17-dice-mood-shift.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "改变下一处景点氛围"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"改变下一处景点氛围\". Scene: dice rolling through light weather and letter cards on route map. Gameplay feeling: 抽取时辰、天气或来信，让后续剧场不重复。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to time-event, weather-backup.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 18,
+        "id": "drum-bell-night-watch",
+        "label": "钟鼓定更",
+        "kind": "landmark",
+        "boardCell": {
+          "trackIndex": 17,
+          "visualClockwiseIndex": 17,
+          "targetLayoutIndex": 17,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 1,
+          "currentCellLabel": "钟鼓定更",
+          "currentCellHelper": "报时",
+          "currentCellKind": "node",
+          "nodeId": "shichahai",
+          "tone": "landmark"
+        },
+        "buttonText": {
+          "title": "钟鼓定更",
+          "helper": "报时",
+          "exactTextToRender": "钟鼓定更\n报时",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "听钟鼓定更",
+          "plot": "明清北京以钟鼓楼报时，暮鼓晨钟把城市作息传到胡同和水岸。",
+          "taskGoal": "选择钟声、鼓点、更夫脚步或胡同夜色，生成一条时间线索。",
+          "playerActions": [
+            "选择一种报时声音",
+            "让更夫把声音写成短句"
+          ],
+          "primaryAction": "听定更",
+          "fallbackAction": "使用钟声线索",
+          "successText": "钟鼓时间线索已加入旧城段落。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "bell",
+            "night-watchman",
+            "old-city-evening",
+            "hutong-resident"
+          ],
+          "rewardCards": [
+            {
+              "id": "bell",
+              "name": "钟声卡",
+              "category": "clue",
+              "deck": "clue"
+            },
+            {
+              "id": "night-watchman",
+              "name": "更夫",
+              "category": "role",
+              "deck": "role"
+            },
+            {
+              "id": "old-city-evening",
+              "name": "旧城晚风",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "hutong-resident",
+              "name": "胡同居民",
+              "category": "role",
+              "deck": "role"
+            }
+          ],
+          "nodeId": "shichahai"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-18-drum-bell-night-watch.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-18-drum-bell-night-watch.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-23-bell.png",
+            "/assets/beijing/deck/card-40-night-watchman.png",
+            "/assets/beijing/deck/card-16-old-city-evening.png",
+            "/assets/beijing/deck/card-41-hutong-resident.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-18-drum-bell-night-watch.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "钟鼓定更",
+              "报时"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"钟鼓定更\" as main title and \"报时\" as small subtitle. Theme: Ming-Qing Beijing Drum Tower and Bell Tower night watch, hutong lanes, lake edge, timekeeping drum and bell, night watchman lantern. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-18-drum-bell-night-watch.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "听钟鼓定更"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"听钟鼓定更\". Scene: Ming-Qing Beijing Drum Tower and Bell Tower night watch, hutong lanes, lake edge, timekeeping drum and bell, night watchman lantern. Gameplay feeling: 选择钟声、鼓点、更夫脚步或胡同夜色，生成一条时间线索。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to bell, night-watchman, old-city-evening, hutong-resident.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 19,
+        "id": "old-city-letter",
+        "label": "旧城短笺",
+        "kind": "echo",
+        "boardCell": {
+          "trackIndex": 18,
+          "visualClockwiseIndex": 18,
+          "targetLayoutIndex": 18,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 2,
+          "currentCellLabel": "旧城短笺",
+          "currentCellHelper": "回应",
+          "currentCellKind": "event",
+          "nodeId": "shichahai",
+          "tone": "echo"
+        },
+        "buttonText": {
+          "title": "旧城短笺",
+          "helper": "回应",
+          "exactTextToRender": "旧城短笺\n回应",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "读取旧城短笺",
+          "plot": "旧城给玩家递来一段没有署名的声音，这一格只负责文字回应，不再和钟鼓声重复。",
+          "taskGoal": "翻开短笺，选择好奇、怀念或追问作为回应语气。",
+          "playerActions": [
+            "翻开旧城短笺",
+            "选择回应语气"
+          ],
+          "primaryAction": "翻开短笺",
+          "fallbackAction": "让系统替我回应",
+          "successText": "角色旁白已生成。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "append_memory_line"
+          ],
+          "rewardCardIds": [
+            "echo-event",
+            "missed-letter"
+          ],
+          "rewardCards": [
+            {
+              "id": "echo-event",
+              "name": "回声事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "missed-letter",
+              "name": "错过的来信卡",
+              "category": "utility",
+              "deck": "support"
+            }
+          ],
+          "nodeId": "shichahai"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-19-old-city-letter.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-19-old-city-letter.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-13-echo-event.png",
+            "/assets/beijing/deck/card-26-missed-letter.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-19-old-city-letter.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "旧城短笺",
+              "回应"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"旧城短笺\" as main title and \"回应\" as small subtitle. Theme: aged paper letter, hutong shadow, city lake fragments, response choice cards. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-19-old-city-letter.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "读取旧城短笺"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"读取旧城短笺\". Scene: aged paper letter, hutong shadow, city lake fragments, response choice cards. Gameplay feeling: 翻开短笺，选择好奇、怀念或追问作为回应语气。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to echo-event, missed-letter.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 20,
+        "id": "sound-bell-footsteps",
+        "label": "市声任务",
+        "kind": "sound",
+        "boardCell": {
+          "trackIndex": 19,
+          "visualClockwiseIndex": 19,
+          "targetLayoutIndex": 19,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 3,
+          "currentCellLabel": "市声任务",
+          "currentCellHelper": "街声",
+          "currentCellKind": "event",
+          "nodeId": "shichahai",
+          "tone": "sound"
+        },
+        "buttonText": {
+          "title": "市声任务",
+          "helper": "街声",
+          "exactTextToRender": "市声任务\n街声",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "生成声音线索",
+          "plot": "钟声、车铃和脚步把旧城时间带到玩家面前。",
+          "taskGoal": "选择或录下钟声、车铃、脚步中的一种。",
+          "playerActions": [
+            "录音或选择声音",
+            "生成声音线索卡"
+          ],
+          "primaryAction": "记录声音",
+          "fallbackAction": "我听见了脚步声",
+          "successText": "声音线索卡已生成。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "bell",
+            "sound-event",
+            "old-city-evening"
+          ],
+          "rewardCards": [
+            {
+              "id": "bell",
+              "name": "钟声卡",
+              "category": "clue",
+              "deck": "clue"
+            },
+            {
+              "id": "sound-event",
+              "name": "市声事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "old-city-evening",
+              "name": "旧城晚风",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": "shichahai"
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-20-sound-bell-footsteps.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-20-sound-bell-footsteps.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-23-bell.png",
+            "/assets/beijing/deck/card-11-sound-event.png",
+            "/assets/beijing/deck/card-16-old-city-evening.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-20-sound-bell-footsteps.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "市声任务",
+              "街声"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"市声任务\" as main title and \"街声\" as small subtitle. Theme: bell tower sound waves, bicycle bell, footsteps on stone alley, audio clue card. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-20-sound-bell-footsteps.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "生成声音线索"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"生成声音线索\". Scene: bell tower sound waves, bicycle bell, footsteps on stone alley, audio clue card. Gameplay feeling: 选择或录下钟声、车铃、脚步中的一种。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to bell, sound-event, old-city-evening.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 21,
+        "id": "cocreate-route-sticker",
+        "label": "共创格",
+        "kind": "create",
+        "boardCell": {
+          "trackIndex": 20,
+          "visualClockwiseIndex": 20,
+          "targetLayoutIndex": 20,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 4,
+          "currentCellLabel": "共创格",
+          "currentCellHelper": "卡牌",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "create"
+        },
+        "buttonText": {
+          "title": "共创格",
+          "helper": "卡牌",
+          "exactTextToRender": "共创格\n卡牌",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "合成本局路线贴纸",
+          "plot": "用已获卡牌合成一枚只属于本局的路线贴纸。",
+          "taskGoal": "选择三张已获卡牌，生成路线贴纸。",
+          "playerActions": [
+            "选择三张卡",
+            "合成贴纸"
+          ],
+          "primaryAction": "合成贴纸",
+          "fallbackAction": "自动选择最近三张",
+          "successText": "贴纸进入终局明信片。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards"
+          ],
+          "rewardCardIds": [
+            "photographer-eye",
+            "axis-scroll"
+          ],
+          "rewardCards": [
+            {
+              "id": "photographer-eye",
+              "name": "摄影师之眼",
+              "category": "achievement",
+              "deck": "journey"
+            },
+            {
+              "id": "axis-scroll",
+              "name": "中轴长卷",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-21-cocreate-route-sticker.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-21-cocreate-route-sticker.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-17-photographer-eye.png",
+            "/assets/beijing/deck/card-15-axis-scroll.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-21-cocreate-route-sticker.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "共创格",
+              "卡牌"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"共创格\" as main title and \"卡牌\" as small subtitle. Theme: route sticker crafting table, three card slots, seal tape and postcard texture. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-21-cocreate-route-sticker.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "合成本局路线贴纸"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"合成本局路线贴纸\". Scene: route sticker crafting table, three card slots, seal tape and postcard texture. Gameplay feeling: 选择三张已获卡牌，生成路线贴纸。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to photographer-eye, axis-scroll.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 22,
+        "id": "dice-finale-tone",
+        "label": "时空骰",
+        "kind": "dice",
+        "boardCell": {
+          "trackIndex": 21,
+          "visualClockwiseIndex": 21,
+          "targetLayoutIndex": 21,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 5,
+          "currentCellLabel": "时空骰",
+          "currentCellHelper": "选择",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "dice"
+        },
+        "buttonText": {
+          "title": "时空骰",
+          "helper": "选择",
+          "exactTextToRender": "时空骰\n选择",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "决定终局语气",
+          "plot": "最后一次事件骰，决定终局游记是温柔、追问还是长卷式收束。",
+          "taskGoal": "掷骰确定终局游记的语气。",
+          "playerActions": [
+            "点击掷骰",
+            "确认终局语气"
+          ],
+          "primaryAction": "掷终局骰",
+          "fallbackAction": "使用回声语气",
+          "successText": "终局文案语气已记录。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "bind_event_mood_to_next_scene"
+          ],
+          "rewardCardIds": [
+            "echo",
+            "time-traveler"
+          ],
+          "rewardCards": [
+            {
+              "id": "echo",
+              "name": "回声卡",
+              "category": "culture",
+              "deck": "core"
+            },
+            {
+              "id": "time-traveler",
+              "name": "时间旅人",
+              "category": "achievement",
+              "deck": "journey"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-22-dice-finale-tone.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-22-dice-finale-tone.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-07-echo.png",
+            "/assets/beijing/deck/card-19-time-traveler.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-22-dice-finale-tone.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "时空骰",
+              "选择"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"时空骰\" as main title and \"选择\" as small subtitle. Theme: finale tone dice, travelogue pages, echo ribbons, warm table light. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-22-dice-finale-tone.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "决定终局语气"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"决定终局语气\". Scene: finale tone dice, travelogue pages, echo ribbons, warm table light. Gameplay feeling: 掷骰确定终局游记的语气。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to echo, time-traveler.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 23,
+        "id": "fate-reality-check",
+        "label": "命运格",
+        "kind": "fate",
+        "boardCell": {
+          "trackIndex": 22,
+          "visualClockwiseIndex": 22,
+          "targetLayoutIndex": 22,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 6,
+          "currentCellLabel": "命运格",
+          "currentCellHelper": "错过",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "fate"
+        },
+        "buttonText": {
+          "title": "命运格",
+          "helper": "错过",
+          "exactTextToRender": "命运格\n错过",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "抽现实约束",
+          "plot": "真实游玩会遇到天气、体力、拥挤和安全问题，命运格负责把它们变成玩法。",
+          "taskGoal": "抽取现实约束，并切换到可完成版本。",
+          "playerActions": [
+            "抽取现实约束",
+            "选择继续或兜底"
+          ],
+          "primaryAction": "抽约束",
+          "fallbackAction": "启用安全卡",
+          "successText": "任务已切换为可完成版本。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "set_route_modifier"
+          ],
+          "rewardCardIds": [
+            "weather-backup",
+            "stamina-supply",
+            "safety",
+            "time-boost"
+          ],
+          "rewardCards": [
+            {
+              "id": "weather-backup",
+              "name": "天气兜底卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "stamina-supply",
+              "name": "体力补给卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "safety",
+              "name": "安全卡",
+              "category": "utility",
+              "deck": "support"
+            },
+            {
+              "id": "time-boost",
+              "name": "时光加成卡",
+              "category": "utility",
+              "deck": "support"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-23-fate-reality-check.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-23-fate-reality-check.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-33-weather-backup.png",
+            "/assets/beijing/deck/card-34-stamina-supply.png",
+            "/assets/beijing/deck/card-32-safety.png",
+            "/assets/beijing/deck/card-30-time-boost.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-23-fate-reality-check.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "命运格",
+              "错过"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"命运格\" as main title and \"错过\" as small subtitle. Theme: weather stamina crowd safety cards around route map, practical travel kit. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-23-fate-reality-check.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "抽现实约束"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"抽现实约束\". Scene: weather stamina crowd safety cards around route map, practical travel kit. Gameplay feeling: 抽取现实约束，并切换到可完成版本。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to weather-backup, stamina-supply, safety, time-boost.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      },
+      {
+        "slot": 24,
+        "id": "echo-return-line",
+        "label": "回声格",
+        "kind": "echo",
+        "boardCell": {
+          "trackIndex": 23,
+          "visualClockwiseIndex": 23,
+          "targetLayoutIndex": 23,
+          "targetLayout": "6x8-perimeter-24",
+          "column": 1,
+          "row": 7,
+          "currentCellLabel": "回声格",
+          "currentCellHelper": "返场",
+          "currentCellKind": "event",
+          "nodeId": null,
+          "tone": "echo"
+        },
+        "buttonText": {
+          "title": "回声格",
+          "helper": "返场",
+          "exactTextToRender": "回声格\n返场",
+          "maxTitleCharacters": 5,
+          "maxHelperCharacters": 4
+        },
+        "gameplay": {
+          "taskTitle": "写下返场回声",
+          "plot": "回到前门之前，玩家把这一圈路压成一句能带走的话。",
+          "taskGoal": "输入一句返场留言，作为进入终局前的最后回声。",
+          "playerActions": [
+            "输入一句短句",
+            "或选择默认模板"
+          ],
+          "primaryAction": "写一句话",
+          "fallbackAction": "使用默认回声",
+          "successText": "返场回声会进入终局游记。",
+          "stateEffects": [
+            "mark_tile_completed",
+            "append_reward_card_ids_to_collected_cards",
+            "append_memory_line"
+          ],
+          "rewardCardIds": [
+            "echo-event",
+            "echo"
+          ],
+          "rewardCards": [
+            {
+              "id": "echo-event",
+              "name": "回声事件卡",
+              "category": "event",
+              "deck": "event"
+            },
+            {
+              "id": "echo",
+              "name": "回声卡",
+              "category": "culture",
+              "deck": "core"
+            }
+          ],
+          "nodeId": null
+        },
+        "imageAssets": {
+          "buttonImage": "/assets/beijing/tile-buttons/button-24-echo-return-line.png",
+          "sceneImage": "/assets/beijing/tile-scenes/tile-24-echo-return-line.png",
+          "referenceAssets": [
+            "/assets/beijing/board/axis-center-map.webp",
+            "/assets/beijing/deck/card-13-echo-event.png",
+            "/assets/beijing/deck/card-07-echo.png"
+          ]
+        },
+        "imageGeneration": {
+          "button": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-buttons/button-24-echo-return-line.png",
+            "aspectRatio": "2:1",
+            "exactChineseText": [
+              "回声格",
+              "返场"
+            ],
+            "prompt": "Generate a 2:1 board-game button tile with exact Chinese text: \"回声格\" as main title and \"返场\" as small subtitle. Theme: return echo note near Qianmen route marker, folded paper, final sentence ribbon, old map edge. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Layout: left small symbolic icon, center readable Chinese title, right tiny card-like illustration. Keep text large, dark ink, no extra text.",
+            "negativePrompt": "no English text, no random extra Chinese text, no logos, no watermark, no blurry letters, no photoreal tourist poster"
+          },
+          "scene": {
+            "tool": "ImageGen",
+            "outputPath": "/assets/beijing/tile-scenes/tile-24-echo-return-line.png",
+            "aspectRatio": "16:9",
+            "exactChineseText": [
+              "写下返场回声"
+            ],
+            "prompt": "Generate a 16:9 scene background for a Beijing central-axis cultural board-game modal. Exact Chinese title on a small paper label: \"写下返场回声\". Scene: return echo note near Qianmen route marker, folded paper, final sentence ribbon, old map edge. Gameplay feeling: 输入一句返场留言，作为进入终局前的最后回声。. Style: premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark. Composition: cinematic tabletop scene, leave a clean right-side or lower area for UI overlay, use card props related to echo-event, echo.",
+            "negativePrompt": "no long paragraphs, no random readable text, no modern app screenshot, no official logo, no watermark"
+          }
+        }
+      }
+    ]
+  },
+  "cards": [
+    {
+      "id": "gate",
+      "no": 1,
+      "name": "城门卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "边界与进入",
+      "description": "城门不是终点，而是城市和人群互相确认的入口。",
+      "color": "#8f2d2d",
+      "iconName": "DoorOpen",
+      "image": "/assets/beijing/deck/card-01-gate.png",
+      "tags": [
+        "城门",
+        "边界",
+        "进入",
+        "前门"
+      ],
+      "unlockRule": "在前门完成城门、门楼或入城主题观察后获得。",
+      "effect": "终局标题优先生成“从城门走入中轴”的叙事线。",
+      "nodeAffinity": [
+        "qianmen"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "start-qianmen-entry",
+          "landmark-gate-market"
+        ],
+        "unlockedByTileLabels": [
+          "前门入城",
+          "城门开市"
+        ],
+        "connectedNodeIds": [
+          "qianmen"
+        ],
+        "triggerModes": [
+          "start",
+          "landmark"
+        ],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-01-gate.png",
+        "promptHint": "When this card is a reward, borrow its color #8f2d2d, motif tags 城门、边界、进入、前门, and theme 边界与进入; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "trade",
+      "no": 2,
+      "name": "商贸卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "买卖与街面",
+      "description": "前门的热闹把货物、消息和脚步都换成了城市记忆。",
+      "color": "#b06a26",
+      "iconName": "Store",
+      "image": "/assets/beijing/deck/card-02-trade.png",
+      "tags": [
+        "商贸",
+        "招牌",
+        "街面",
+        "人流"
+      ],
+      "unlockRule": "完成前门街面观察任务后获得。",
+      "effect": "让清末掌柜更关注买卖、消息和人群。",
+      "nodeAffinity": [
+        "qianmen"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-gate-market",
+          "photo-gate-market"
+        ],
+        "unlockedByTileLabels": [
+          "城门开市",
+          "拍照任务"
+        ],
+        "connectedNodeIds": [
+          "qianmen"
+        ],
+        "triggerModes": [
+          "landmark",
+          "photo"
+        ],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-02-trade.png",
+        "promptHint": "When this card is a reward, borrow its color #b06a26, motif tags 商贸、招牌、街面、人流, and theme 买卖与街面; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "axis",
+      "no": 3,
+      "name": "秩序卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "方向与规制",
+      "description": "一条线让空间有了方向，也让行走变成了入局。",
+      "color": "#355f8c",
+      "iconName": "Compass",
+      "image": "/assets/beijing/deck/card-03-order.png",
+      "tags": [
+        "中轴",
+        "方向",
+        "秩序",
+        "对称"
+      ],
+      "unlockRule": "完成中轴视线点的方向感观察后获得。",
+      "effect": "终局游记更强调城市秩序与个人路线。",
+      "nodeAffinity": [
+        "axis"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-axis-view"
+        ],
+        "unlockedByTileLabels": [
+          "中轴取景"
+        ],
+        "connectedNodeIds": [
+          "axis"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-03-order.png",
+        "promptHint": "When this card is a reward, borrow its color #355f8c, motif tags 中轴、方向、秩序、对称, and theme 方向与规制; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "palace",
+      "no": 4,
+      "name": "宫城卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "建筑与审美",
+      "description": "屋檐、水面和倒影共同守住一座宫城的构图。",
+      "color": "#743038",
+      "iconName": "Castle",
+      "image": "/assets/beijing/deck/card-04-palace.png",
+      "tags": [
+        "宫城",
+        "角楼",
+        "屋檐",
+        "倒影"
+      ],
+      "unlockRule": "完成故宫角楼或筒子河的构图观察后获得。",
+      "effect": "让宫廷画师更关注光影、边界和构图。",
+      "nodeAffinity": [
+        "corner-tower"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-corner-tower"
+        ],
+        "unlockedByTileLabels": [
+          "宫城水影"
+        ],
+        "connectedNodeIds": [
+          "corner-tower"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-04-palace.png",
+        "promptHint": "When this card is a reward, borrow its color #743038, motif tags 宫城、角楼、屋檐、倒影, and theme 建筑与审美; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "overlook",
+      "no": 5,
+      "name": "俯瞰卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "登高与长卷",
+      "description": "站高一点，街道、树影和人的脚步都进入同一张长卷。",
+      "color": "#3d6f62",
+      "iconName": "Mountain",
+      "image": "/assets/beijing/deck/card-05-overlook.png",
+      "tags": [
+        "登高",
+        "景山",
+        "长卷",
+        "城市层次"
+      ],
+      "unlockRule": "完成景山或替代登高点的城市层次观察后获得。",
+      "effect": "终局游记会生成“城市长卷”视角。",
+      "nodeAffinity": [
+        "jingshan"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-jingshan"
+        ],
+        "unlockedByTileLabels": [
+          "登高观城"
+        ],
+        "connectedNodeIds": [
+          "jingshan"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-05-overlook.png",
+        "promptHint": "When this card is a reward, borrow its color #3d6f62, motif tags 登高、景山、长卷、城市层次, and theme 登高与长卷; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "life",
+      "no": 6,
+      "name": "烟火卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "胡同与日常",
+      "description": "城楼上的钟声很远，胡同里的晚饭很近。",
+      "color": "#8a4f35",
+      "iconName": "Waves",
+      "image": "/assets/beijing/deck/card-06-life.png",
+      "tags": [
+        "烟火",
+        "胡同",
+        "日常",
+        "什刹海"
+      ],
+      "unlockRule": "完成旧城生活细节或市声记录后获得。",
+      "effect": "让终局从宏大秩序落回具体生活。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [],
+        "unlockedByTileLabels": [],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": false,
+        "note": "暂不由24格直接奖励，但保留在完整41张卡牌库中，可由后续成就、终局或隐藏规则触发。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-06-life.png",
+        "promptHint": "When this card is a reward, borrow its color #8a4f35, motif tags 烟火、胡同、日常、什刹海, and theme 胡同与日常; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "echo",
+      "no": 7,
+      "name": "回声卡",
+      "category": "culture",
+      "categoryLabel": "文化核心卡",
+      "deck": "core",
+      "theme": "用户记忆",
+      "description": "你留给北京的一句话，会成为这局故事真正的落款。",
+      "color": "#5b477a",
+      "iconName": "Sparkles",
+      "image": "/assets/beijing/deck/card-07-echo.png",
+      "tags": [
+        "回声",
+        "留言",
+        "记忆",
+        "终局"
+      ],
+      "unlockRule": "在任一任务中写下留给北京的一句话后进入终局牌阵。",
+      "effect": "终局游记结尾使用玩家自己的记忆句。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "echo-card-unlock",
+          "echo-overlook-note",
+          "dice-finale-tone",
+          "echo-return-line"
+        ],
+        "unlockedByTileLabels": [
+          "回声卡",
+          "回声格",
+          "时空骰"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "echo",
+          "dice"
+        ],
+        "primaryUse": "决定终局叙事主题、地点记忆和路线标题。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-07-echo.png",
+        "promptHint": "When this card is a reward, borrow its color #5b477a, motif tags 回声、留言、记忆、终局, and theme 用户记忆; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "time-event",
+      "no": 8,
+      "name": "时辰事件卡",
+      "category": "event",
+      "categoryLabel": "事件卡",
+      "deck": "event",
+      "theme": "此刻入戏",
+      "description": "根据当前时间、光线和人流，为同一地点换一段开场。",
+      "color": "#9d5a2e",
+      "iconName": "Clock3",
+      "image": "/assets/beijing/deck/card-08-time-event.png",
+      "tags": [
+        "时辰",
+        "光线",
+        "天气",
+        "人流"
+      ],
+      "unlockRule": "进入任一地点时可从事件牌堆抽取。",
+      "effect": "让剧场开场读取当前时间段，生成晨、午、暮、夜不同语气。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-first-event",
+          "dice-mood-shift"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "dice"
+        ],
+        "primaryUse": "改变当前格子的剧场语气、任务方式和现实观察角度。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-08-time-event.png",
+        "promptHint": "When this card is a reward, borrow its color #9d5a2e, motif tags 时辰、光线、天气、人流, and theme 此刻入戏; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "object-event",
+      "no": 9,
+      "name": "风物事件卡",
+      "category": "event",
+      "categoryLabel": "事件卡",
+      "deck": "event",
+      "theme": "风物入局",
+      "description": "把屋檐、水面、招牌、门钉或街声变成剧情道具。",
+      "color": "#7b6a35",
+      "iconName": "Feather",
+      "image": "/assets/beijing/deck/card-09-object-event.png",
+      "tags": [
+        "风物",
+        "现场元素",
+        "照片",
+        "道具"
+      ],
+      "unlockRule": "拍照识别或手选现场元素后触发。",
+      "effect": "让剧场台词必须引用玩家刚刚观察到的一个元素。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-first-event"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "dice"
+        ],
+        "primaryUse": "改变当前格子的剧场语气、任务方式和现实观察角度。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-09-object-event.png",
+        "promptHint": "When this card is a reward, borrow its color #7b6a35, motif tags 风物、现场元素、照片、道具, and theme 风物入局; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "letter-event",
+      "no": 10,
+      "name": "来信事件卡",
+      "category": "event",
+      "categoryLabel": "事件卡",
+      "deck": "event",
+      "theme": "历史提问",
+      "description": "历史角色把一个问题交给玩家，让答案从今天带回过去。",
+      "color": "#a15b45",
+      "iconName": "ScrollText",
+      "image": "/assets/beijing/deck/card-10-letter-event.png",
+      "tags": [
+        "来信",
+        "提问",
+        "历史角色",
+        "选择"
+      ],
+      "unlockRule": "抽到来信骰面或进入剧场追问时触发。",
+      "effect": "给当前角色增加一个“向玩家提问”的桥段。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-first-event"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "dice"
+        ],
+        "primaryUse": "改变当前格子的剧场语气、任务方式和现实观察角度。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-10-letter-event.png",
+        "promptHint": "When this card is a reward, borrow its color #a15b45, motif tags 来信、提问、历史角色、选择, and theme 历史提问; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "sound-event",
+      "no": 11,
+      "name": "市声事件卡",
+      "category": "event",
+      "categoryLabel": "事件卡",
+      "deck": "event",
+      "theme": "声音观察",
+      "description": "让玩家把 10 秒城市声音作为本回合的现实证据。",
+      "color": "#45756e",
+      "iconName": "AudioLines",
+      "image": "/assets/beijing/deck/card-11-sound-event.png",
+      "tags": [
+        "市声",
+        "录音",
+        "人声",
+        "车铃"
+      ],
+      "unlockRule": "抽到市声骰面、手动选择声音元素或跳过拍照时触发。",
+      "effect": "任务主目标从拍照切换为声音记录。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-first-event",
+          "sound-street",
+          "sound-bell-footsteps"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰",
+          "市声任务"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "dice",
+          "sound"
+        ],
+        "primaryUse": "改变当前格子的剧场语气、任务方式和现实观察角度。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-11-sound-event.png",
+        "promptHint": "When this card is a reward, borrow its color #45756e, motif tags 市声、录音、人声、车铃, and theme 声音观察; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "turn-event",
+      "no": 12,
+      "name": "转折事件卡",
+      "category": "event",
+      "categoryLabel": "事件卡",
+      "deck": "event",
+      "theme": "路线抉择",
+      "description": "给玩家一个历史处境选择，改变奖励、语气或下一步路线。",
+      "color": "#8d4f39",
+      "iconName": "Footprints",
+      "image": "/assets/beijing/deck/card-12-turn-event.png",
+      "tags": [
+        "转折",
+        "选择",
+        "路线",
+        "分支"
+      ],
+      "unlockRule": "抽到转折骰面或玩家体力、天气不适合原路线时触发。",
+      "effect": "允许生成替代任务或提前进入终局。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-first-event"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "dice"
+        ],
+        "primaryUse": "改变当前格子的剧场语气、任务方式和现实观察角度。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-12-turn-event.png",
+        "promptHint": "When this card is a reward, borrow its color #8d4f39, motif tags 转折、选择、路线、分支, and theme 路线抉择; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "echo-event",
+      "no": 13,
+      "name": "回声事件卡",
+      "category": "event",
+      "categoryLabel": "事件卡",
+      "deck": "event",
+      "theme": "当下回应",
+      "description": "让玩家给城市留下一句话，并把它写入终局游记。",
+      "color": "#69508e",
+      "iconName": "MessageCircleQuestion",
+      "image": "/assets/beijing/deck/card-13-echo-event.png",
+      "tags": [
+        "回声",
+        "留言",
+        "终局",
+        "记忆"
+      ],
+      "unlockRule": "抽到回声骰面或完成最后一个路线节点时触发。",
+      "effect": "打开记忆输入，并将文本绑定到回声卡。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-first-event",
+          "echo-card-unlock",
+          "old-city-letter",
+          "echo-return-line"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰",
+          "回声卡",
+          "旧城短笺",
+          "回声格"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "dice",
+          "echo"
+        ],
+        "primaryUse": "改变当前格子的剧场语气、任务方式和现实观察角度。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-13-echo-event.png",
+        "promptHint": "When this card is a reward, borrow its color #69508e, motif tags 回声、留言、终局、记忆, and theme 当下回应; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "gate-questions",
+      "no": 14,
+      "name": "城门三问",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "入城追问",
+      "description": "从“谁在进城、为何停留、今天还留下什么”三个问题读前门。",
+      "color": "#9b3e34",
+      "iconName": "DoorOpen",
+      "image": "/assets/beijing/deck/card-14-gate-questions.png",
+      "tags": [
+        "城门",
+        "问答",
+        "前门",
+        "成就"
+      ],
+      "unlockRule": "在前门剧场完成任意一次追问后获得。",
+      "effect": "终局为前门段落追加三问式小标题。",
+      "nodeAffinity": [
+        "qianmen"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-gate-market"
+        ],
+        "unlockedByTileLabels": [
+          "城门开市"
+        ],
+        "connectedNodeIds": [
+          "qianmen"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-14-gate-questions.png",
+        "promptHint": "When this card is a reward, borrow its color #9b3e34, motif tags 城门、问答、前门、成就, and theme 入城追问; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "axis-scroll",
+      "no": 15,
+      "name": "中轴长卷",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "把路线展开",
+      "description": "把前门、中轴、宫城、景山与旧城连成一张可回看的长卷。",
+      "color": "#365f86",
+      "iconName": "MapIcon",
+      "image": "/assets/beijing/deck/card-15-axis-scroll.png",
+      "tags": [
+        "中轴",
+        "长卷",
+        "路线",
+        "终局牌阵"
+      ],
+      "unlockRule": "完成任意三个路线节点后获得。",
+      "effect": "终局展示本局路线牌阵。",
+      "nodeAffinity": [
+        "axis",
+        "jingshan"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-axis-view",
+          "cocreate-city-seal",
+          "travelogue-midpoint",
+          "echo-overlook-note",
+          "landmark-jingshan",
+          "cocreate-route-sticker"
+        ],
+        "unlockedByTileLabels": [
+          "中轴取景",
+          "共创格",
+          "时空游记",
+          "回声格",
+          "登高观城"
+        ],
+        "connectedNodeIds": [
+          "axis",
+          "jingshan"
+        ],
+        "triggerModes": [
+          "landmark",
+          "create",
+          "finale",
+          "echo"
+        ],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-15-axis-scroll.png",
+        "promptHint": "When this card is a reward, borrow its color #365f86, motif tags 中轴、长卷、路线、终局牌阵, and theme 把路线展开; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "old-city-evening",
+      "no": 16,
+      "name": "旧城晚风",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "傍晚与旧城",
+      "description": "当路线走向晚风、湖面和胡同，故事从宏大秩序落入人的日常。",
+      "color": "#876044",
+      "iconName": "Waves",
+      "image": "/assets/beijing/deck/card-16-old-city-evening.png",
+      "tags": [
+        "旧城",
+        "傍晚",
+        "湖面",
+        "胡同"
+      ],
+      "unlockRule": "完成什刹海节点，或在傍晚时段完成任一节点后获得。",
+      "effect": "终局文案加入更柔和的旧城生活段落。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "drum-bell-night-watch",
+          "sound-bell-footsteps"
+        ],
+        "unlockedByTileLabels": [
+          "钟鼓定更",
+          "市声任务"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "landmark",
+          "sound"
+        ],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-16-old-city-evening.png",
+        "promptHint": "When this card is a reward, borrow its color #876044, motif tags 旧城、傍晚、湖面、胡同, and theme 傍晚与旧城; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "photographer-eye",
+      "no": 17,
+      "name": "摄影师之眼",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "构图与凝视",
+      "description": "玩家用光线、远近、对称或人物关系，把城市拍成自己的证据。",
+      "color": "#466f76",
+      "iconName": "Camera",
+      "image": "/assets/beijing/deck/card-17-photographer-eye.png",
+      "tags": [
+        "摄影",
+        "构图",
+        "照片",
+        "观察"
+      ],
+      "unlockRule": "上传照片或选择任意两个画面元素后获得。",
+      "effect": "让剧场优先引用画面语言。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "photo-gate-market",
+          "landmark-corner-tower",
+          "cocreate-city-seal",
+          "photo-transition",
+          "cocreate-route-sticker"
+        ],
+        "unlockedByTileLabels": [
+          "拍照任务",
+          "宫城水影",
+          "共创格"
+        ],
+        "connectedNodeIds": [
+          "qianmen",
+          "corner-tower"
+        ],
+        "triggerModes": [
+          "photo",
+          "landmark",
+          "create"
+        ],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-17-photographer-eye.png",
+        "promptHint": "When this card is a reward, borrow its color #466f76, motif tags 摄影、构图、照片、观察, and theme 构图与凝视; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "family-detective",
+      "no": 18,
+      "name": "亲子小侦探",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "一起发现",
+      "description": "把复杂的城市秩序拆成能一起寻找、一起确认的小线索。",
+      "color": "#8c6a2d",
+      "iconName": "Users",
+      "image": "/assets/beijing/deck/card-18-family-detective.png",
+      "tags": [
+        "亲子",
+        "协作",
+        "寻找",
+        "线索"
+      ],
+      "unlockRule": "开局选择亲子同行，或连续完成两个手动观察任务后获得。",
+      "effect": "任务说明更短、更明确，并增加“找一找”式提示。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [],
+        "unlockedByTileLabels": [],
+        "connectedNodeIds": [],
+        "triggerModes": [],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": false,
+        "note": "暂不由24格直接奖励，但保留在完整41张卡牌库中，可由后续成就、终局或隐藏规则触发。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-18-family-detective.png",
+        "promptHint": "When this card is a reward, borrow its color #8c6a2d, motif tags 亲子、协作、寻找、线索, and theme 一起发现; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "time-traveler",
+      "no": 19,
+      "name": "时间旅人",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "跨时对话",
+      "description": "玩家在现实地点与历史角色对话，让今天的脚步穿过旧时间。",
+      "color": "#6f568f",
+      "iconName": "Clock3",
+      "image": "/assets/beijing/deck/card-19-time-traveler.png",
+      "tags": [
+        "时间",
+        "角色",
+        "剧场",
+        "路线"
+      ],
+      "unlockRule": "完成任意三次角色对话后获得。",
+      "effect": "终局将角色对话整理成“时间旅人札记”。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "travelogue-midpoint",
+          "dice-finale-tone"
+        ],
+        "unlockedByTileLabels": [
+          "时空游记",
+          "时空骰"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "finale",
+          "dice"
+        ],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-19-time-traveler.png",
+        "promptHint": "When this card is a reward, borrow its color #6f568f, motif tags 时间、角色、剧场、路线, and theme 跨时对话; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "shadow",
+      "no": 20,
+      "name": "影子卡",
+      "category": "achievement",
+      "categoryLabel": "旅程成就卡",
+      "deck": "journey",
+      "theme": "隐线与错过",
+      "description": "没有被拍到的、来不及走到的，也能成为这局故事的影子。",
+      "color": "#4c4b50",
+      "iconName": "Eye",
+      "image": "/assets/beijing/deck/card-20-shadow.png",
+      "tags": [
+        "隐藏",
+        "错过",
+        "替代路线",
+        "影子"
+      ],
+      "unlockRule": "使用兜底卡、跳过节点或选择替代任务后获得。",
+      "effect": "终局承认现实行程中的错过，并把它写成故事分支。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "hidden-missed-letter"
+        ],
+        "unlockedByTileLabels": [
+          "隐藏支线"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "branch"
+        ],
+        "primaryUse": "记录玩家本局完成方式和路线表现。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-20-shadow.png",
+        "promptHint": "When this card is a reward, borrow its color #4c4b50, motif tags 隐藏、错过、替代路线、影子, and theme 隐线与错过; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "symmetry",
+      "no": 21,
+      "name": "对称卡",
+      "category": "clue",
+      "categoryLabel": "观察线索卡",
+      "deck": "clue",
+      "theme": "左右平衡",
+      "description": "当照片出现中线、左右平衡或秩序感，对称就成为剧情线索。",
+      "color": "#315d87",
+      "iconName": "Scale",
+      "image": "/assets/beijing/deck/card-21-symmetry.png",
+      "tags": [
+        "对称",
+        "中线",
+        "秩序",
+        "照片线索"
+      ],
+      "unlockRule": "在中轴、广场、城楼视线点选择或识别到对称元素后获得。",
+      "effect": "剧场台词会解释“为什么这条线让城市显得稳定”。",
+      "nodeAffinity": [
+        "axis"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-axis-view",
+          "photo-transition"
+        ],
+        "unlockedByTileLabels": [
+          "中轴取景",
+          "拍照任务"
+        ],
+        "connectedNodeIds": [
+          "axis"
+        ],
+        "triggerModes": [
+          "landmark",
+          "photo"
+        ],
+        "primaryUse": "把照片、声音、手选元素变成剧情证据。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-21-symmetry.png",
+        "promptHint": "When this card is a reward, borrow its color #315d87, motif tags 对称、中线、秩序、照片线索, and theme 左右平衡; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "water-ripple",
+      "no": 22,
+      "name": "水纹卡",
+      "category": "clue",
+      "categoryLabel": "观察线索卡",
+      "deck": "clue",
+      "theme": "水面与倒影",
+      "description": "水纹把宫城、树影和天空折成另一层时间。",
+      "color": "#3d7274",
+      "iconName": "Droplets",
+      "image": "/assets/beijing/deck/card-22-water-ripple.png",
+      "tags": [
+        "水面",
+        "倒影",
+        "筒子河",
+        "湖面"
+      ],
+      "unlockRule": "识别或手选水面、倒影、湖面元素后获得。",
+      "effect": "宫廷画师或胡同居民会围绕水面生成独白。",
+      "nodeAffinity": [
+        "corner-tower",
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-corner-tower"
+        ],
+        "unlockedByTileLabels": [
+          "宫城水影"
+        ],
+        "connectedNodeIds": [
+          "corner-tower",
+          "shichahai"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "把照片、声音、手选元素变成剧情证据。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-22-water-ripple.png",
+        "promptHint": "When this card is a reward, borrow its color #3d7274, motif tags 水面、倒影、筒子河、湖面, and theme 水面与倒影; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "bell",
+      "no": 23,
+      "name": "钟声卡",
+      "category": "clue",
+      "categoryLabel": "观察线索卡",
+      "deck": "clue",
+      "theme": "声音与时间",
+      "description": "钟声把城市的时间从高处传下来，落进今天的脚步。",
+      "color": "#8f6534",
+      "iconName": "Bell",
+      "image": "/assets/beijing/deck/card-23-bell.png",
+      "tags": [
+        "钟声",
+        "鼓楼",
+        "声音",
+        "时间"
+      ],
+      "unlockRule": "在旧城、鼓楼或市声任务中选择声音元素后获得。",
+      "effect": "声音任务生成更强的时间感。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "sound-street",
+          "drum-bell-night-watch",
+          "sound-bell-footsteps"
+        ],
+        "unlockedByTileLabels": [
+          "市声任务",
+          "钟鼓定更"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "sound",
+          "landmark"
+        ],
+        "primaryUse": "把照片、声音、手选元素变成剧情证据。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-23-bell.png",
+        "promptHint": "When this card is a reward, borrow its color #8f6534, motif tags 钟声、鼓楼、声音、时间, and theme 声音与时间; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "human-life",
+      "no": 24,
+      "name": "人间烟火卡",
+      "category": "clue",
+      "categoryLabel": "观察线索卡",
+      "deck": "clue",
+      "theme": "生活细节",
+      "description": "招牌、车铃、晚饭、人群和铺面，让城市不是展品，而是生活。",
+      "color": "#9a5537",
+      "iconName": "Store",
+      "image": "/assets/beijing/deck/card-24-human-life.png",
+      "tags": [
+        "烟火",
+        "招牌",
+        "车铃",
+        "铺面"
+      ],
+      "unlockRule": "在前门或旧城选择生活细节后获得。",
+      "effect": "终局把宏大建筑与普通人的日常并置。",
+      "nodeAffinity": [
+        "qianmen",
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-gate-market",
+          "photo-gate-market"
+        ],
+        "unlockedByTileLabels": [
+          "城门开市",
+          "拍照任务"
+        ],
+        "connectedNodeIds": [
+          "qianmen",
+          "shichahai"
+        ],
+        "triggerModes": [
+          "landmark",
+          "photo"
+        ],
+        "primaryUse": "把照片、声音、手选元素变成剧情证据。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-24-human-life.png",
+        "promptHint": "When this card is a reward, borrow its color #9a5537, motif tags 烟火、招牌、车铃、铺面, and theme 生活细节; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "letter",
+      "no": 25,
+      "name": "来信卡",
+      "category": "clue",
+      "categoryLabel": "观察线索卡",
+      "deck": "clue",
+      "theme": "问题留存",
+      "description": "一封来自历史角色的信，等待玩家用今天的观察回复。",
+      "color": "#9d4f42",
+      "iconName": "ScrollText",
+      "image": "/assets/beijing/deck/card-25-letter.png",
+      "tags": [
+        "来信",
+        "回复",
+        "角色",
+        "问题"
+      ],
+      "unlockRule": "抽到来信事件并完成一次角色追问后获得。",
+      "effect": "终局加入一段“给过去的回信”。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [],
+        "unlockedByTileLabels": [],
+        "connectedNodeIds": [],
+        "triggerModes": [],
+        "primaryUse": "把照片、声音、手选元素变成剧情证据。",
+        "shouldAppearInSceneRewardPreview": false,
+        "note": "暂不由24格直接奖励，但保留在完整41张卡牌库中，可由后续成就、终局或隐藏规则触发。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-25-letter.png",
+        "promptHint": "When this card is a reward, borrow its color #9d4f42, motif tags 来信、回复、角色、问题, and theme 问题留存; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "missed-letter",
+      "no": 26,
+      "name": "错过的来信卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "错过也成局",
+      "description": "如果某个地点来不及停留，系统把错过写成一封未拆的信。",
+      "color": "#75536f",
+      "iconName": "ScrollText",
+      "image": "/assets/beijing/deck/card-26-missed-letter.png",
+      "tags": [
+        "错过",
+        "兜底",
+        "替代",
+        "来信"
+      ],
+      "unlockRule": "跳过任一地点或未完成照片任务时获得。",
+      "effect": "允许玩家不被中断地继续路线，并在终局说明错过的原因。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "hidden-missed-letter",
+          "old-city-letter"
+        ],
+        "unlockedByTileLabels": [
+          "隐藏支线",
+          "旧城短笺"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "branch",
+          "echo"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-26-missed-letter.png",
+        "promptHint": "When this card is a reward, borrow its color #75536f, motif tags 错过、兜底、替代、来信, and theme 错过也成局; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "rule-keeper",
+      "no": 27,
+      "name": "守规矩的旅人卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "文明与边界",
+      "description": "提醒玩家尊重现场规则、拍摄边界和公共空间秩序。",
+      "color": "#4d7464",
+      "iconName": "ShieldCheck",
+      "image": "/assets/beijing/deck/card-27-rule-keeper.png",
+      "tags": [
+        "规则",
+        "文明游览",
+        "安全",
+        "边界"
+      ],
+      "unlockRule": "进入有安全、排队或拍摄限制的地点时自动可用。",
+      "effect": "把任务切换为合法停留区域内的替代观察。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [],
+        "unlockedByTileLabels": [],
+        "connectedNodeIds": [],
+        "triggerModes": [],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": false,
+        "note": "暂不由24格直接奖励，但保留在完整41张卡牌库中，可由后续成就、终局或隐藏规则触发。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-27-rule-keeper.png",
+        "promptHint": "When this card is a reward, borrow its color #4d7464, motif tags 规则、文明游览、安全、边界, and theme 文明与边界; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "hint",
+      "no": 28,
+      "name": "提示卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "轻提示",
+      "description": "当玩家不知道看什么，给出一个短小、可执行的观察提示。",
+      "color": "#b07a2c",
+      "iconName": "Lightbulb",
+      "image": "/assets/beijing/deck/card-28-hint.png",
+      "tags": [
+        "提示",
+        "引导",
+        "观察",
+        "轻任务"
+      ],
+      "unlockRule": "任何地点都可作为帮助牌使用。",
+      "effect": "显示一个现场元素建议，降低任务卡住的概率。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "start-qianmen-entry"
+        ],
+        "unlockedByTileLabels": [
+          "前门入城"
+        ],
+        "connectedNodeIds": [
+          "qianmen"
+        ],
+        "triggerModes": [
+          "start"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-28-hint.png",
+        "promptHint": "When this card is a reward, borrow its color #b07a2c, motif tags 提示、引导、观察、轻任务, and theme 轻提示; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "boat-ticket",
+      "no": 29,
+      "name": "船票卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "路线转场",
+      "description": "让玩家把湖面、岸边和旧城转场想象成一次轻盈的换景。",
+      "color": "#367177",
+      "iconName": "Ticket",
+      "image": "/assets/beijing/deck/card-29-boat-ticket.png",
+      "tags": [
+        "船票",
+        "转场",
+        "什刹海",
+        "路线"
+      ],
+      "unlockRule": "进入什刹海、湖面或替代路线时可获得。",
+      "effect": "允许从旧城节点直接进入终局或短线游记。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [],
+        "unlockedByTileLabels": [],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": false,
+        "note": "暂不由24格直接奖励，但保留在完整41张卡牌库中，可由后续成就、终局或隐藏规则触发。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-29-boat-ticket.png",
+        "promptHint": "When this card is a reward, borrow its color #367177, motif tags 船票、转场、什刹海、路线, and theme 路线转场; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "time-boost",
+      "no": 30,
+      "name": "时光加成卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "节奏加速",
+      "description": "当玩家时间紧，系统把任务压缩成一个关键观察点。",
+      "color": "#7c5f9b",
+      "iconName": "Zap",
+      "image": "/assets/beijing/deck/card-30-time-boost.png",
+      "tags": [
+        "加速",
+        "时间",
+        "短线",
+        "节奏"
+      ],
+      "unlockRule": "开局选择 60 分钟路线，或任一节点选择快速完成时获得。",
+      "effect": "减少任务步骤，保留核心剧情奖励。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "fate-first-turn",
+          "fate-route-choice",
+          "fate-reality-check"
+        ],
+        "unlockedByTileLabels": [
+          "命运格"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "fate"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-30-time-boost.png",
+        "promptHint": "When this card is a reward, borrow its color #7c5f9b, motif tags 加速、时间、短线、节奏, and theme 节奏加速; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "rewind",
+      "no": 31,
+      "name": "回溯卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "重新选择",
+      "description": "允许玩家回到上一步，重选照片元素、问题或任务方向。",
+      "color": "#655395",
+      "iconName": "RotateCcw",
+      "image": "/assets/beijing/deck/card-31-rewind.png",
+      "tags": [
+        "回溯",
+        "重选",
+        "撤回",
+        "容错"
+      ],
+      "unlockRule": "完成第一个节点后常驻可用。",
+      "effect": "为后续交互提供“重新选择”的状态底座。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "fate-route-choice"
+        ],
+        "unlockedByTileLabels": [
+          "命运格"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "fate"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-31-rewind.png",
+        "promptHint": "When this card is a reward, borrow its color #655395, motif tags 回溯、重选、撤回、容错, and theme 重新选择; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "safety",
+      "no": 32,
+      "name": "安全卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "安全优先",
+      "description": "当现场拥挤、过街不便或停留不安全，任务自动切到安全版本。",
+      "color": "#4f7a5c",
+      "iconName": "LifeBuoy",
+      "image": "/assets/beijing/deck/card-32-safety.png",
+      "tags": [
+        "安全",
+        "拥挤",
+        "替代点",
+        "现实约束"
+      ],
+      "unlockRule": "在拥挤、封路或无法停留时手动启用。",
+      "effect": "保留剧情但替换为远观、手选或声音任务。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "fate-first-turn",
+          "fate-route-choice",
+          "fate-reality-check"
+        ],
+        "unlockedByTileLabels": [
+          "命运格"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "fate"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-32-safety.png",
+        "promptHint": "When this card is a reward, borrow its color #4f7a5c, motif tags 安全、拥挤、替代点、现实约束, and theme 安全优先; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "weather-backup",
+      "no": 33,
+      "name": "天气兜底卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "雨雪也能玩",
+      "description": "天气不好时，雨伞、水痕、雾气和室内视线也会变成线索。",
+      "color": "#4f6f88",
+      "iconName": "CloudSun",
+      "image": "/assets/beijing/deck/card-33-weather-backup.png",
+      "tags": [
+        "天气",
+        "雨雪",
+        "兜底",
+        "替代观察"
+      ],
+      "unlockRule": "玩家选择天气不佳，或系统读取天气后可自动加入手牌。",
+      "effect": "给每个地点生成天气版任务。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "dice-mood-shift",
+          "fate-reality-check"
+        ],
+        "unlockedByTileLabels": [
+          "时空骰",
+          "命运格"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "dice",
+          "fate"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-33-weather-backup.png",
+        "promptHint": "When this card is a reward, borrow its color #4f6f88, motif tags 天气、雨雪、兜底、替代观察, and theme 雨雪也能玩; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "stamina-supply",
+      "no": 34,
+      "name": "体力补给卡",
+      "category": "utility",
+      "categoryLabel": "功能兜底卡",
+      "deck": "support",
+      "theme": "慢下来",
+      "description": "提醒玩家休息、补水，并把附近短停留点转成剧情节点。",
+      "color": "#8b6b2f",
+      "iconName": "ShieldCheck",
+      "image": "/assets/beijing/deck/card-34-stamina-supply.png",
+      "tags": [
+        "体力",
+        "休息",
+        "补给",
+        "慢路线"
+      ],
+      "unlockRule": "开局选择轻松走，或任一节点选择休息时获得。",
+      "effect": "把完整路线压缩为轻体验终局。",
+      "nodeAffinity": [],
+      "role": null,
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "fate-first-turn",
+          "fate-reality-check"
+        ],
+        "unlockedByTileLabels": [
+          "命运格"
+        ],
+        "connectedNodeIds": [],
+        "triggerModes": [
+          "fate"
+        ],
+        "primaryUse": "处理天气、体力、错过、安全、提示和回溯。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-34-stamina-supply.png",
+        "promptHint": "When this card is a reward, borrow its color #8b6b2f, motif tags 体力、休息、补给、慢路线, and theme 慢下来; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "gate-history",
+      "no": 35,
+      "name": "城门史",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "城门沿革",
+      "description": "用城门、城墙、街面和人的进出解释“入城”这件事。",
+      "color": "#8f3a32",
+      "iconName": "Landmark",
+      "image": "/assets/beijing/deck/card-35-gate-history.png",
+      "tags": [
+        "角色",
+        "城门",
+        "历史",
+        "前门"
+      ],
+      "unlockRule": "前门节点的历史讲述型剧场角色。",
+      "effect": "为“城门三问”和前门补充历史解释。",
+      "nodeAffinity": [
+        "qianmen"
+      ],
+      "role": {
+        "name": "城门史",
+        "title": "替城门记住来路的人",
+        "tone": "沉稳、清晰，擅长把城门制度讲成普通人听得懂的故事。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [],
+        "unlockedByTileLabels": [],
+        "connectedNodeIds": [
+          "qianmen"
+        ],
+        "triggerModes": [],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": false,
+        "note": "暂不由24格直接奖励，但保留在完整41张卡牌库中，可由后续成就、终局或隐藏规则触发。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-35-gate-history.png",
+        "promptHint": "When this card is a reward, borrow its color #8f3a32, motif tags 角色、城门、历史、前门, and theme 城门沿革; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "qing-merchant",
+      "no": 36,
+      "name": "清末掌柜",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "买卖与消息",
+      "description": "城门外最会听消息的人，把前门的热闹说给玩家听。",
+      "color": "#a95d2d",
+      "iconName": "Store",
+      "image": "/assets/beijing/deck/card-36-qing-merchant.png",
+      "tags": [
+        "角色",
+        "掌柜",
+        "前门",
+        "商贸"
+      ],
+      "unlockRule": "前门主线角色牌。",
+      "effect": "驱动前门剧场口吻。",
+      "nodeAffinity": [
+        "qianmen"
+      ],
+      "role": {
+        "name": "清末掌柜",
+        "title": "城门外最会听消息的人",
+        "tone": "精明、亲切，关心买卖、人流和城门开合。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-gate-market"
+        ],
+        "unlockedByTileLabels": [
+          "城门开市"
+        ],
+        "connectedNodeIds": [
+          "qianmen"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-36-qing-merchant.png",
+        "promptHint": "When this card is a reward, borrow its color #a95d2d, motif tags 角色、掌柜、前门、商贸, and theme 买卖与消息; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "city-craftsman",
+      "no": 37,
+      "name": "营城匠师",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "方向与尺度",
+      "description": "把方向画进城市的人，用线、尺度和对称解释中轴。",
+      "color": "#315d87",
+      "iconName": "Compass",
+      "image": "/assets/beijing/deck/card-37-city-craftsman.png",
+      "tags": [
+        "角色",
+        "匠师",
+        "中轴",
+        "秩序"
+      ],
+      "unlockRule": "中轴视线点主线角色牌。",
+      "effect": "驱动中轴剧场口吻。",
+      "nodeAffinity": [
+        "axis"
+      ],
+      "role": {
+        "name": "营城匠师",
+        "title": "把方向画进城市的人",
+        "tone": "沉稳、讲尺度，常用线、方向、对称和远近来解释城市。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-axis-view"
+        ],
+        "unlockedByTileLabels": [
+          "中轴取景"
+        ],
+        "connectedNodeIds": [
+          "axis"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-37-city-craftsman.png",
+        "promptHint": "When this card is a reward, borrow its color #315d87, motif tags 角色、匠师、中轴、秩序, and theme 方向与尺度; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "palace-painter",
+      "no": 38,
+      "name": "宫廷画师",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "光影与构图",
+      "description": "替宫城收住光影的人，把屋檐、水面和倒影说成画。",
+      "color": "#7e3238",
+      "iconName": "Palette",
+      "image": "/assets/beijing/deck/card-38-palace-painter.png",
+      "tags": [
+        "角色",
+        "画师",
+        "宫城",
+        "构图"
+      ],
+      "unlockRule": "故宫角楼节点主线角色牌。",
+      "effect": "驱动宫城水影剧场口吻。",
+      "nodeAffinity": [
+        "corner-tower"
+      ],
+      "role": {
+        "name": "宫廷画师",
+        "title": "替宫城收住光影的人",
+        "tone": "克制、讲究构图，常用屋檐、水面、倒影和光线回应用户。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-corner-tower"
+        ],
+        "unlockedByTileLabels": [
+          "宫城水影"
+        ],
+        "connectedNodeIds": [
+          "corner-tower"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-38-palace-painter.png",
+        "promptHint": "When this card is a reward, borrow its color #7e3238, motif tags 角色、画师、宫城、构图, and theme 光影与构图; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "city-historian",
+      "no": 39,
+      "name": "观城史官",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "登高读城",
+      "description": "从高处读城市长卷的人，把秩序、缝隙和脚步放在一起看。",
+      "color": "#3d705e",
+      "iconName": "Mountain",
+      "image": "/assets/beijing/deck/card-39-city-historian.png",
+      "tags": [
+        "角色",
+        "史官",
+        "景山",
+        "俯瞰"
+      ],
+      "unlockRule": "景山节点主线角色牌。",
+      "effect": "驱动登高观城剧场口吻。",
+      "nodeAffinity": [
+        "jingshan"
+      ],
+      "role": {
+        "name": "观城史官",
+        "title": "从高处读城市长卷的人",
+        "tone": "沉稳、纵深感强，连接空间、时间和普通人的行走。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "landmark-jingshan"
+        ],
+        "unlockedByTileLabels": [
+          "登高观城"
+        ],
+        "connectedNodeIds": [
+          "jingshan"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-39-city-historian.png",
+        "promptHint": "When this card is a reward, borrow its color #3d705e, motif tags 角色、史官、景山、俯瞰, and theme 登高读城; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "night-watchman",
+      "no": 40,
+      "name": "更夫",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "夜色与钟鼓",
+      "description": "听见旧城夜色、钟鼓和脚步的人，让市声带上时间感。",
+      "color": "#665178",
+      "iconName": "Mic2",
+      "image": "/assets/beijing/deck/card-40-night-watchman.png",
+      "tags": [
+        "角色",
+        "更夫",
+        "钟声",
+        "夜色"
+      ],
+      "unlockRule": "市声、钟鼓或傍晚路线中可解锁的支线角色牌。",
+      "effect": "给声音任务增加夜色与时间提示。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": {
+        "name": "更夫",
+        "title": "替旧城听夜的人",
+        "tone": "低声、克制，擅长把钟鼓、脚步和夜色串成短句。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "drum-bell-night-watch"
+        ],
+        "unlockedByTileLabels": [
+          "钟鼓定更"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-40-night-watchman.png",
+        "promptHint": "When this card is a reward, borrow its color #665178, motif tags 角色、更夫、钟声、夜色, and theme 夜色与钟鼓; do not copy the full card frame unless making reward preview art."
+      }
+    },
+    {
+      "id": "hutong-resident",
+      "no": 41,
+      "name": "胡同居民",
+      "category": "role",
+      "categoryLabel": "剧场角色卡",
+      "deck": "role",
+      "theme": "日常记忆",
+      "description": "把日子过成城市记忆的人，让旧城不只属于建筑，也属于生活。",
+      "color": "#8b5835",
+      "iconName": "UserRound",
+      "image": "/assets/beijing/deck/card-41-hutong-resident.png",
+      "tags": [
+        "角色",
+        "胡同",
+        "居民",
+        "日常"
+      ],
+      "unlockRule": "什刹海与胡同节点主线角色牌。",
+      "effect": "驱动旧城回声剧场口吻。",
+      "nodeAffinity": [
+        "shichahai"
+      ],
+      "role": {
+        "name": "胡同居民",
+        "title": "把日子过成城市记忆的人",
+        "tone": "亲近、朴素，有生活气，关心声音、门牌、晚饭和人的去留。"
+      },
+      "gameplayBinding": {
+        "unlockedByTileIds": [
+          "drum-bell-night-watch"
+        ],
+        "unlockedByTileLabels": [
+          "钟鼓定更"
+        ],
+        "connectedNodeIds": [
+          "shichahai"
+        ],
+        "triggerModes": [
+          "landmark"
+        ],
+        "primaryUse": "定义地点 NPC 身份、语气和对话风格。",
+        "shouldAppearInSceneRewardPreview": true,
+        "note": "由24格按钮直接触发或预览。"
+      },
+      "imageGenerationReference": {
+        "useAsReferenceForTileImages": true,
+        "referenceImage": "/assets/beijing/deck/card-41-hutong-resident.png",
+        "promptHint": "When this card is a reward, borrow its color #8b5835, motif tags 角色、胡同、居民、日常, and theme 日常记忆; do not copy the full card frame unless making reward preview art."
+      }
+    }
+  ],
+  "imageGenerationGlobal": {
+    "tool": "ImageGen",
+    "batches": [
+      {
+        "name": "tile-buttons",
+        "count": 24,
+        "outputDir": "/assets/beijing/tile-buttons/",
+        "aspectRatio": "use generated card ratio, approximately 2.5:1",
+        "textRequired": true
+      },
+      {
+        "name": "tile-scenes",
+        "count": 24,
+        "outputDir": "/assets/beijing/tile-scenes/",
+        "aspectRatio": "16:9",
+        "textRequired": true
+      }
+    ],
+    "globalStylePrompt": "premium modern guofeng tabletop board game UI, Beijing central-axis theme, rice paper texture, cinnabar red, muted teal, warm gold, refined collectible card surface, crisp readable Chinese lettering, no logos, no watermark",
+    "referenceAssets": {
+      "centerMap": "/assets/beijing/board/axis-center-map.webp",
+      "currentBoardScreenshot": "/output/playwright/board-task-triggers-final.png",
+      "cardArtDirectory": "/assets/beijing/deck/",
+      "landmarkDirectory": "/assets/beijing/landmarks/",
+      "uiSpriteDirectory": "/assets/beijing/sprites/"
+    },
+    "textRenderingGuidance": [
+      "本规格生成 24 个棋盘按钮图，完全对应当前代码的24格棋盘。",
+      "按钮图片本身可以含主标题和副标题；前端不要再叠加额外可见文字。",
+      "从绿幕合图切出按钮后，保持生成图原始长条比例，只做透明背景处理。"
+    ]
+  }
+}
