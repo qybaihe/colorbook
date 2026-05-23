@@ -58,6 +58,16 @@
 
 ## 快速启动
 
+### 直接下载桌面版
+
+如果不想配置 Node.js，可以在 GitHub Releases 下载桌面安装包：
+
+- macOS Apple Silicon：下载 `Colorbook-Beijing-*-mac-arm64.dmg`
+- macOS Intel：下载 `Colorbook-Beijing-*-mac-x64.dmg`
+- Windows 64 位：下载 `Colorbook-Beijing-*-windows-x64.exe`
+
+桌面版内置完整游戏资产，不需要后端服务。macOS 首次打开未签名 DMG 时，可能需要在「系统设置 → 隐私与安全性」里允许打开。
+
 ### 环境要求
 
 - Node.js 20 或更新版本
@@ -83,6 +93,15 @@ http://127.0.0.1:5173/
 npm run build
 npm run preview
 ```
+
+### 桌面包构建
+
+```bash
+npm run desktop:build -- --mac dmg
+npm run desktop:build -- --win nsis
+```
+
+仓库已配置 GitHub Actions：推送 `v*` 标签时，会自动在 macOS/Windows runner 上构建 DMG 和 EXE，并挂到对应 GitHub Release。
 
 ### 代码检查
 
@@ -138,6 +157,8 @@ npm run lint
 │   ├── screens/              # 入口、棋盘、场景、剧场、任务、卡册、终局页面
 │   ├── App.tsx               # 主流程状态机
 │   └── App.css               # 横屏桌游视觉系统
+├── electron/                 # Electron 桌面壳与本地资源协议
+├── .github/workflows/        # 自动构建 DMG / EXE 并发布 Release
 ├── docs/screenshots/         # README 截图
 ├── package.json
 └── vite.config.ts
@@ -145,6 +166,8 @@ npm run lint
 
 ## 关键文件
 
+- `electron/main.cjs`：桌面版入口，负责加载生产构建后的游戏和本地资源。
+- `.github/workflows/desktop-release.yml`：GitHub Actions 桌面自动出包与 Release 发布流程。
 - `src/App.tsx`：页面流程、玩家状态、卡牌收集与任务完成逻辑。
 - `src/data/boardTrack.ts`：24 格棋盘顺序、坐标和棋子走格路径。
 - `src/data/beijingGame.ts`：5 个主线地点、角色、任务、骰面和奖励规则。
