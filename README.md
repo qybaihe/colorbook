@@ -2,7 +2,7 @@
 
 > 一款把真实城市路线、桌游棋盘、AI 角色剧场、拍照/听声任务和卡牌收集串起来的横屏文化游戏原型。
 
-![北京中轴入局棋盘](docs/screenshots/02-board.png)
+![北京中轴入局棋盘](docs/screenshots/readme/02-board.webp)
 
 ## 项目简介
 
@@ -23,32 +23,32 @@
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/01-entry.png" alt="入口页" /></td>
-    <td width="50%"><img src="docs/screenshots/02-board.png" alt="城市棋盘" /></td>
+    <td width="50%"><img src="docs/screenshots/readme/01-entry.webp" alt="入口页" /></td>
+    <td width="50%"><img src="docs/screenshots/readme/02-board.webp" alt="城市棋盘" /></td>
   </tr>
   <tr>
     <td><strong>入口页</strong><br />选择北京《中轴入局》，进入横屏桌游舞台。</td>
     <td><strong>城市棋盘</strong><br />24 格外圈棋盘、中心路线地图、右侧当前回合和底部卡册。</td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/03-scene-photo.png" alt="场景拍照任务" /></td>
-    <td><img src="docs/screenshots/04-ai-theater.png" alt="AI 剧场" /></td>
+    <td><img src="docs/screenshots/readme/03-scene-photo.webp" alt="场景拍照任务" /></td>
+    <td><img src="docs/screenshots/readme/04-ai-theater.webp" alt="AI 剧场" /></td>
   </tr>
   <tr>
     <td><strong>场景任务</strong><br />每格使用专属背景图，上传框和兜底选择悬浮在场景之上。</td>
     <td><strong>AI 剧场</strong><br />角色卡、骰面语气和现场元素共同驱动打字机对白。</td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/05-theater-choice.png" alt="玩家选择影响对白" /></td>
-    <td><img src="docs/screenshots/06-mission.png" alt="现实任务页" /></td>
+    <td><img src="docs/screenshots/readme/05-theater-choice.webp" alt="玩家选择影响对白" /></td>
+    <td><img src="docs/screenshots/readme/06-mission.webp" alt="现实任务页" /></td>
   </tr>
   <tr>
     <td><strong>玩家选择</strong><br />右侧选择卡会直接改变中间剧情文本，并以打字机效果重新出现。</td>
     <td><strong>现实任务</strong><br />拍照观察、市声记录、留下回声，完成后领取本格牌组。</td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/07-card-album.png" alt="卡牌册" /></td>
-    <td><img src="docs/screenshots/08-finale.png" alt="终局游记" /></td>
+    <td><img src="docs/screenshots/readme/07-card-album.webp" alt="卡牌册" /></td>
+    <td><img src="docs/screenshots/readme/08-finale.webp" alt="终局游记" /></td>
   </tr>
   <tr>
     <td><strong>卡牌册</strong><br />41 张游戏卡按类型展示，已获得和未解锁状态分明。</td>
@@ -153,7 +153,8 @@ npm run lint
 - `public/assets/beijing/ui/`：上传框、对话框、奖励光效、印章等 UI 组件素材。
 - `public/assets/app-icon/`：应用图标与首页品牌图标资产。
 - `public/audio/`：北京篇 BGM 与交互音效。
-- `docs/screenshots/`：README 展示截图，由浏览器自动化从当前版本生成。
+- `docs/screenshots/`：浏览器自动化生成的高清截图。
+- `docs/screenshots/readme/`：README 专用压缩 WebP 预览图，用来提升 GitHub 页面加载速度。
 
 ## 技术栈
 
@@ -185,7 +186,7 @@ npm run lint
 ├── build/                    # 桌面端图标资源
 ├── scripts/                  # 图标生成脚本
 ├── .github/workflows/        # 自动构建 DMG / EXE / APK / IPA 并发布 Release
-├── docs/screenshots/         # README 截图
+├── docs/screenshots/         # 高清截图与 README 压缩预览图
 ├── capacitor.config.ts
 ├── package.json
 └── vite.config.ts
