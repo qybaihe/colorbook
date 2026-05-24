@@ -1,4 +1,4 @@
-import { readdirSync, statSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 
@@ -43,7 +43,8 @@ async function optimizeImage(filePath) {
   const before = statSync(filePath).size
   const ext = path.extname(filePath).toLowerCase()
   const profile = getProfile(filePath)
-  const image = sharp(filePath, { animated: false })
+  const input = readFileSync(filePath)
+  const image = sharp(input, { animated: false })
   const metadata = await image.metadata()
   const width = metadata.width ?? profile.maxWidth
   const resizeWidth = width > profile.maxWidth ? profile.maxWidth : width
