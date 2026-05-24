@@ -1,7 +1,7 @@
 {
   "name": "colorbook",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "北京中轴入局：AI 城市时空棋局横屏桌游原型",
   "author": "qybaihe",
   "type": "module",

@@ -212,4 +212,4 @@ jobs:
             - `Colorbook-Beijing-*-lite-android-debug.apk`：Android 调试签名轻量 APK，可直接安装测试。
             - `Colorbook-Beijing-*-lite-ios-unsigned.ipa`：iOS 未签名轻量 IPA，需要使用自己的 Apple 开发者证书重新签名后安装。
 
-            当前版本为本地演示原型，不需要后端服务、不需要登录，也不调用真实 AI 接口。
+            默认 `Local Only` 模式不需要后端服务、不需要登录，也不调用外部 AI。入口页可选择 `AI Mode`，填写 OpenAI 兼容 URL、API Key 和模型名后，剧场对白与终局游记会根据玩家行为实时生成。

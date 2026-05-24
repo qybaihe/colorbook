@@ -8,6 +8,9 @@ import {
   getGameCards,
   type GameCard,
 } from '../data/gameCards'
+import type { AiEndpointConfig, GameMode, JourneyEvent } from '../types'
+import { createFinaleMessages, parseFinaleResponse } from '../utils/aiPrompts'
+import { requestOpenAiText } from '../utils/openAiCompatible'
 import { playUiSound } from '../utils/sound'
 
 type FinaleNodeCopy = {
@@ -87,11 +90,21 @@ function useTypewriter(text: string, speed = 34) {
     clearTimer()
 
     if (!text) {
-      window.setTimeout(() => setIsDone(true), 0)
-      return clearTimer
+      const emptyTimer = window.setTimeout(() => {
+        setDisplayedLength(0)
+        setIsDone(true)
+      }, 0)
+      return () => {
+        window.clearTimeout(emptyTimer)
+        clearTimer()
+      }
     }
 
     let index = 0
+    const resetTimer = window.setTimeout(() => {
+      setDisplayedLength(0)
+      setIsDone(false)
+    }, 0)
     intervalRef.current = window.setInterval(() => {
       index = Math.min(text.length, index + 1)
       setDisplayedLength(index)
@@ -109,7 +122,10 @@ function useTypewriter(text: string, speed = 34) {
       }
     }, speed)
 
-    return clearTimer
+    return () => {
+      window.clearTimeout(resetTimer)
+      clearTimer()
+    }
   }, [clearTimer, speed, text])
 
   const finish = useCallback(() => {
@@ -174,7 +190,38 @@ function createTravelogue({
   const ending = `如果要把什么留给未来，我会留下这句话：“${memoryLine}” 也留下我遇见的${roleNames || '陌生人'}、我听见的城市回声，以及一个很小的愿望：后来的人再走到这里时，眼前有景，耳边有声，心里有一条能回家的北京。`
 
   const typedStory = [intro, ...nodeParagraphs, cardSummary, truth, ending].join('\n\n')
-  const saveText = [
+  const saveText = createSaveText({
+    title,
+    playerName,
+    memoryLine,
+    completedNodes: storyNodes,
+    earnedCards,
+    typedStory,
+  })
+
+  return { typedStory, saveText, truth }
+}
+
+function createSaveText({
+  title,
+  playerName,
+  memoryLine,
+  completedNodes,
+  earnedCards,
+  typedStory,
+}: {
+  title: string
+  playerName: string
+  memoryLine: string
+  completedNodes: RouteNode[]
+  earnedCards: GameCard[]
+  typedStory: string
+}) {
+  const storyNodes = completedNodes.length ? completedNodes : routeNodes.slice(0, 1)
+  const roleNames = storyNodes.map((node) => node.roleName).join('、')
+  const cardNames = earnedCards.map((card) => card.name)
+
+  return [
     `《${title}》`,
     '',
     `署名：${playerName}`,
@@ -185,8 +232,6 @@ function createTravelogue({
     '',
     typedStory,
   ].join('\n')
-
-  return { typedStory, saveText, truth }
 }
 
 export function FinaleScreen({
@@ -194,6 +239,9 @@ export function FinaleScreen({
   memoryLine,
   collectedCardIds,
   completedNodeIds,
+  gameMode,
+  aiConfig,
+  journeyLog,
   onReset,
   onOpenCards,
 }: {
@@ -201,10 +249,22 @@ export function FinaleScreen({
   memoryLine: string
   collectedCardIds: string[]
   completedNodeIds: string[]
+  gameMode: GameMode
+  aiConfig?: AiEndpointConfig
+  journeyLog: JourneyEvent[]
   onReset: () => void
   onOpenCards: (cardId: string) => void
 }) {
   const [shareStatus, setShareStatus] = useState('')
+  const [aiFinaleState, setAiFinaleState] = useState<{
+    status: 'idle' | 'loading' | 'success' | 'error'
+    error?: string
+  }>({ status: 'idle' })
+  const [aiTravelogue, setAiTravelogue] = useState<{
+    typedStory: string
+    saveText: string
+    truth: string
+  } | null>(null)
   const [finaleTime] = useState(formatFinaleTime)
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window === 'undefined') return ''
@@ -222,10 +282,11 @@ export function FinaleScreen({
     [completedNodeIds],
   )
   const displayName = playerName.trim() || '时空旅人'
-  const travelogue = useMemo(
+  const localTravelogue = useMemo(
     () => createTravelogue({ title, playerName: displayName, memoryLine, completedNodes, earnedCards }),
     [completedNodes, displayName, earnedCards, memoryLine, title],
   )
+  const travelogue = gameMode === 'ai' && aiTravelogue ? aiTravelogue : localTravelogue
   const { displayedText, finish, isDone } = useTypewriter(phase === 'story' ? travelogue.typedStory : '')
   const typedParagraphs = displayedText.split('\n\n')
   const isFullRoute = completedNodes.length >= routeNodes.length
@@ -243,6 +304,67 @@ export function FinaleScreen({
     playUiSound('finale')
     setPhase('story')
   }, [])
+
+  useEffect(() => {
+    if (phase !== 'story' || gameMode !== 'ai' || !aiConfig) {
+      return undefined
+    }
+
+    const controller = new AbortController()
+    const loadingTimer = window.setTimeout(() => {
+      setAiTravelogue(null)
+      setAiFinaleState({ status: 'loading' })
+    }, 0)
+
+    requestOpenAiText({
+      config: aiConfig,
+      signal: controller.signal,
+      maxTokens: 1400,
+      temperature: 0.82,
+      messages: createFinaleMessages({
+        title,
+        playerName: displayName,
+        memoryLine,
+        completedNodes,
+        earnedCards,
+        journeyLog,
+      }),
+    })
+      .then((rawText) => {
+        let nextCopy
+        try {
+          nextCopy = parseFinaleResponse(rawText)
+        } catch {
+          nextCopy = {
+            typedStory: rawText.trim(),
+            truth: 'AI 已根据你的路线、卡牌和回声写下这一局：北京不是被看完的，是被你一步步走出来的。',
+          }
+        }
+
+        setAiTravelogue({
+          ...nextCopy,
+          saveText: createSaveText({
+            title,
+            playerName: displayName,
+            memoryLine,
+            completedNodes,
+            earnedCards,
+            typedStory: nextCopy.typedStory,
+          }),
+        })
+        setAiFinaleState({ status: 'success' })
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return
+        const message = error instanceof Error ? error.message : 'AI 游记暂时没有返回'
+        setAiFinaleState({ status: 'error', error: message })
+      })
+
+    return () => {
+      window.clearTimeout(loadingTimer)
+      controller.abort()
+    }
+  }, [aiConfig, completedNodes, displayName, earnedCards, gameMode, journeyLog, memoryLine, phase, title])
 
   useEffect(() => {
     const audio = finaleAudioRef.current
@@ -407,9 +529,16 @@ export function FinaleScreen({
 
           <article className="finale-paper" aria-label="逐字生成的游记正文">
             <div className="paper-ribbon">
-              <span>写给城市的一封信</span>
+              <span>{gameMode === 'ai' ? 'AI Mode 写给城市的一封信' : '写给城市的一封信'}</span>
               {!isDone && <button type="button" onClick={finish}>跳过书写</button>}
             </div>
+            <p className={`ai-finale-status ${aiFinaleState.status}`}>
+              {gameMode === 'ai' && aiFinaleState.status === 'loading' && 'AI 正在根据你的选择、卡牌和回声重写终局游记...'}
+              {gameMode === 'ai' && aiFinaleState.status === 'success' && `AI Mode · ${aiConfig?.model} 已入册`}
+              {gameMode === 'ai' && aiFinaleState.status === 'error' && `AI 暂未接通，已保留本地游记：${aiFinaleState.error}`}
+              {gameMode === 'ai' && aiFinaleState.status === 'idle' && 'AI Mode 等待终局入册'}
+              {gameMode === 'local' && 'Local Only · 使用本地剧本生成'}
+            </p>
             <div className="typewriter-copy">
               {typedParagraphs.map((paragraph, index) => {
                 const isActive = index === typedParagraphs.length - 1 && !isDone
