@@ -2,6 +2,8 @@ import type { AssetKey } from './beijingAssets'
 
 export type WalkDirection = 'up' | 'down' | 'left' | 'right'
 
+export type BoardEventTone = 'start' | 'dice' | 'photo' | 'sound' | 'fate' | 'echo' | 'create' | 'finale'
+
 export type TrackCell =
   | {
       kind: 'node'
@@ -15,7 +17,7 @@ export type TrackCell =
       helper: string
       column: string
       row: string
-      tone: 'start' | 'dice' | 'photo' | 'sound' | 'fate' | 'echo' | 'create' | 'finale'
+      tone: BoardEventTone
       assetKey?: AssetKey
     }
 
@@ -85,6 +87,13 @@ export const boardLayout = {
 
 export function getTrackCellIndexByNodeId(nodeId: string) {
   return trackCells.findIndex((cell) => cell.kind === 'node' && cell.nodeId === nodeId)
+}
+
+export function getTrackCellLabel(index: number) {
+  const cell = trackCells[index]
+  if (!cell) return '未知格'
+  if (cell.kind === 'node') return cell.nodeId
+  return `${cell.label} / ${cell.helper}`
 }
 
 export function getTrackWalkIndexes(startIndex: number, targetIndex: number) {

@@ -1,39 +1,31 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import {
   boardLayout,
-  getTrackCellIndexByNodeId,
   getTrackStepDirection,
   getTrackWalkIndexes,
   tileButtonImages,
   trackCells,
   type WalkDirection,
 } from '../data/boardTrack'
-import { routeNodes, type RouteNode } from '../data/beijingGame'
+import { routeNodes } from '../data/beijingGame'
 import { playUiSound } from '../utils/sound'
 import { AssetSlot } from './AssetSlot'
 
 export function BoardView({
-  currentNode,
+  currentTrackIndex,
   completedNodeIds,
-  walkFromNodeId,
+  walkFromTrackIndex,
   onOpenNode,
   onWalkComplete,
 }: {
-  currentNode: RouteNode
+  currentTrackIndex: number
   completedNodeIds: string[]
-  walkFromNodeId: string | null
+  walkFromTrackIndex: number | null
   onOpenNode: () => void
   onWalkComplete: () => void
 }) {
-  const targetIndex = useMemo(() => {
-    const index = getTrackCellIndexByNodeId(currentNode.id)
-    return index >= 0 ? index : 0
-  }, [currentNode.id])
-  const startIndex = useMemo(() => {
-    if (!walkFromNodeId) return targetIndex
-    const index = getTrackCellIndexByNodeId(walkFromNodeId)
-    return index >= 0 ? index : targetIndex
-  }, [targetIndex, walkFromNodeId])
+  const targetIndex = currentTrackIndex
+  const startIndex = walkFromTrackIndex ?? targetIndex
   const [walkerIndex, setWalkerIndex] = useState(startIndex)
   const [walkDirection, setWalkDirection] = useState<WalkDirection>('down')
   const [isWalking, setIsWalking] = useState(false)
@@ -74,7 +66,7 @@ export function BoardView({
 
       if (walkIndexes.length <= 1) {
         setIsWalking(false)
-        if (walkFromNodeId) onWalkComplete()
+        if (walkFromTrackIndex !== null) onWalkComplete()
         return
       }
 
@@ -103,7 +95,7 @@ export function BoardView({
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer))
     }
-  }, [onWalkComplete, startIndex, targetIndex, walkFromNodeId])
+  }, [onWalkComplete, startIndex, targetIndex, walkFromTrackIndex])
 
   useEffect(() => {
     let frame = 0
@@ -134,7 +126,7 @@ export function BoardView({
         if (cell.kind === 'node') {
           const node = routeNodes.find((item) => item.id === cell.nodeId)
           if (!node) return null
-          const active = node.id === currentNode.id
+          const active = index === currentTrackIndex
           const completed = completedNodeIds.includes(node.id)
           return (
             <button
@@ -143,9 +135,9 @@ export function BoardView({
               }`}
               key={node.id}
               type="button"
-              aria-label={`${node.title}，${node.subtitle}`}
-              aria-disabled={!active}
-              onClick={active ? onOpenNode : undefined}
+            aria-label={`${node.title}，${node.subtitle}`}
+            aria-disabled={!active}
+            onClick={active ? onOpenNode : undefined}
               style={{ gridColumn: cell.column, gridRow: cell.row, '--accent': node.accent } as CSSProperties}
             >
               <img className="board-cell-image" src={tileImage} alt="" draggable={false} />
@@ -155,11 +147,14 @@ export function BoardView({
 
         return (
           <button
-            className={`board-cell image-cell event-cell ${cell.tone} ${occupied ? 'occupied' : ''}`}
+            className={`board-cell image-cell event-cell ${cell.tone} ${
+              index === currentTrackIndex ? 'active' : ''
+            } ${occupied ? 'occupied' : ''}`}
             key={`${cell.label}-${index}`}
             type="button"
             aria-label={`${cell.label}，${cell.helper}`}
-            aria-disabled="true"
+            aria-disabled={index === currentTrackIndex ? undefined : 'true'}
+            onClick={index === currentTrackIndex ? onOpenNode : undefined}
             style={{ gridColumn: cell.column, gridRow: cell.row } as CSSProperties}
           >
             <img className="board-cell-image" src={tileImage} alt="" draggable={false} />

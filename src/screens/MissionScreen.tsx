@@ -3,22 +3,28 @@ import type { LucideIcon } from 'lucide-react'
 import { CheckCircle2, ChevronLeft, ImageUp, MessageSquareText, Mic2 } from 'lucide-react'
 import { RewardCards } from '../components/CardHand'
 import type { RouteNode } from '../data/beijingGame'
-import { getNodeSceneMeta } from '../data/tileScenes'
+import type { BoardEvent } from '../data/randomEvents'
+import { getTurnSceneMeta } from '../data/tileScenes'
 
 export function MissionScreen({
   node,
+  trackIndex,
+  boardEvent,
   memoryLine,
   onBack,
   onMemoryChange,
   onComplete,
 }: {
   node: RouteNode
+  trackIndex: number
+  boardEvent: BoardEvent | null
   memoryLine: string
   onBack: () => void
   onMemoryChange: (value: string) => void
   onComplete: () => void
 }) {
-  const scene = getNodeSceneMeta(node.id)
+  const scene = getTurnSceneMeta(node.id, trackIndex, boardEvent)
+  const rewardCardIds = Array.from(new Set([...node.rewardCardIds, ...(boardEvent?.rewardCardIds ?? [])])).slice(0, 6)
 
   return (
     <section className="screen scene-mission-screen" style={{ '--scene-accent': node.accent } as CSSProperties}>
@@ -40,6 +46,7 @@ export function MissionScreen({
           <p className="eyebrow">任务目标</p>
           <h2>{node.mission}</h2>
           <p>{scene.storyHint}</p>
+          {boardEvent && <small>{boardEvent.storyHook}</small>}
         </section>
 
         <section className="scene-mission-scroll" aria-label="现实任务卡阵">
@@ -49,8 +56,8 @@ export function MissionScreen({
           </div>
 
           <div className="scene-task-cards">
-            <TaskCard icon={ImageUp} title="拍照观察" text={node.photoPrompt} />
-            <TaskCard icon={Mic2} title="市声记录" text="可用 10 秒城市声音替代。" />
+            <TaskCard icon={ImageUp} title="拍照观察" text={boardEvent?.taskDirective ?? node.photoPrompt} />
+            <TaskCard icon={Mic2} title="市声记录" text={boardEvent?.tone === 'sound' ? boardEvent.taskDirective : '可用 10 秒城市声音替代。'} />
             <TaskCard icon={MessageSquareText} title="留下回声" text="想交给北京的一句话。" />
           </div>
 
@@ -83,7 +90,7 @@ export function MissionScreen({
             <h2>本格牌组</h2>
           </div>
           <div className="rack-slots">
-            <RewardCards cardIds={node.rewardCardIds} />
+            <RewardCards cardIds={rewardCardIds} />
           </div>
         </aside>
       </main>

@@ -7,7 +7,16 @@ import {
   routeNodes,
   type DialogueChoice,
 } from './data/beijingGame'
+import { getTrackCellLabel, trackCells } from './data/boardTrack'
 import { defaultSelectedCardId } from './data/gameCards'
+import {
+  drawBoardEvent,
+  getClueCardIdsForElements,
+  getEventCardIdsForDice,
+  resolveNodeForLanding,
+  type BoardEvent,
+  type MoveResult,
+} from './data/randomEvents'
 import { BoardScreen } from './screens/BoardScreen'
 import { CardAlbumScreen } from './screens/CardAlbumScreen'
 import { EntryScreen } from './screens/EntryScreen'
@@ -51,7 +60,11 @@ function App() {
   const [gameMode, setGameMode] = useState<GameMode>('local')
   const [aiConfig, setAiConfig] = useState<AiEndpointConfig | undefined>()
   const [journeyLog, setJourneyLog] = useState<JourneyEvent[]>([])
-  const [currentNodeIndex, setCurrentNodeIndex] = useState(0)
+  const [currentNodeId, setCurrentNodeId] = useState(routeNodes[0].id)
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
+  const [walkFromTrackIndex, setWalkFromTrackIndex] = useState<number | null>(null)
+  const [activeBoardEvent, setActiveBoardEvent] = useState<BoardEvent | null>(null)
+  const [lastMove, setLastMove] = useState<MoveResult | null>(null)
   const [completedNodeIds, setCompletedNodeIds] = useState<string[]>([])
   const [collectedCardIds, setCollectedCardIds] = useState<string[]>([])
   const [selectedElements, setSelectedElements] = useState<ElementMap>({})
@@ -60,10 +73,9 @@ function App() {
   const [activeChoice, setActiveChoice] = useState<DialogueChoice | null>(null)
   const [selectedCardId, setSelectedCardId] = useState(defaultSelectedCardId)
   const [memoryLine, setMemoryLine] = useState('我把今天的脚步留在北京的轴线上。')
-  const [walkFromNodeId, setWalkFromNodeId] = useState<string | null>(null)
   const [playerStamina, setPlayerStamina] = useState(maxPlayerStamina)
 
-  const currentNode = routeNodes[currentNodeIndex]
+  const currentNode = routeNodes.find((node) => node.id === currentNodeId) ?? routeNodes[0]
   const activeDice = diceFaces.find((face) => face.id === activeDiceId) ?? diceFaces[1]
   const storyTitle = createStoryTitle(collectedCardIds)
 
@@ -93,6 +105,7 @@ function App() {
   }
 
   const startBoard = (setup: GameSetup) => {
+    const openingEvent = drawBoardEvent('start', [])
     setGameMode(setup.mode)
     setAiConfig(setup.mode === 'ai' ? setup.aiConfig : undefined)
     setJourneyLog([
@@ -101,8 +114,18 @@ function App() {
         label: setup.mode === 'ai' ? '选择 AI Mode 开局' : '选择 Local Only 开局',
         detail: setup.mode === 'ai' ? `模型：${setup.aiConfig?.model ?? '未填写'}` : '全程使用本地文案，不调用外部模型',
       }),
+      createJourneyEvent({
+        type: 'event',
+        nodeId: routeNodes[0].id,
+        label: `开局事件：${openingEvent.title}`,
+        detail: openingEvent.description,
+      }),
     ])
-    setWalkFromNodeId(null)
+    setCurrentNodeId(routeNodes[0].id)
+    setCurrentTrackIndex(0)
+    setWalkFromTrackIndex(null)
+    setActiveBoardEvent(openingEvent)
+    setLastMove(null)
     playUiSoundSequence(['cardShuffle', ['cardDraw', 420]])
     setScreen('board')
   }
@@ -142,7 +165,13 @@ function App() {
   const completeMission = () => {
     playUiSoundSequence(['mission', ['reward', 170], ['cardUnlock', 360]])
     const nodeElements = selectedElements[currentNode.id] ?? []
-    const rewardIds = [...currentNode.rewardCardIds]
+    const rewardIds = [
+      ...currentNode.rewardCardIds,
+      ...(activeBoardEvent?.rewardCardIds ?? []),
+      ...getEventCardIdsForDice(activeDiceId),
+      ...getClueCardIdsForElements(nodeElements, photoNames[currentNode.id]),
+    ]
+    const completedNext = Array.from(new Set([...completedNodeIds, currentNode.id]))
 
     if (
       currentNode.optionalCardIds?.includes('gate') &&
@@ -160,26 +189,64 @@ function App() {
     appendJourneyEvent({
       type: 'reward',
       nodeId: currentNode.id,
-      label: `领取本格牌组：${currentNode.rewardCardIds.length} 张`,
+      label: `领取本格牌组：${Array.from(new Set(rewardIds)).length} 张`,
       detail: rewardIds.join('、'),
     })
     setCollectedCardIds((current) => Array.from(new Set([...current, ...rewardIds])))
-    setCompletedNodeIds((current) => Array.from(new Set([...current, currentNode.id])))
+    setCompletedNodeIds(completedNext)
 
-    if (currentNodeIndex >= routeNodes.length - 1) {
+    if (completedNext.length >= routeNodes.length) {
       window.setTimeout(() => playUiSound('finale'), 620)
       setScreen('finale')
       return
     }
 
-    setWalkFromNodeId(currentNode.id)
+    const roll = Math.floor(Math.random() * 6) + 1
+    const nextTrackIndex = (currentTrackIndex + roll) % trackCells.length
+    const landingCell = trackCells[nextTrackIndex]
+    const nextBoardEvent = landingCell.kind === 'event' ? drawBoardEvent(landingCell.tone, completedNext) : null
+    const nextNodeId = resolveNodeForLanding({
+      cell: landingCell,
+      boardEvent: nextBoardEvent,
+      completedNodeIds: completedNext,
+      previousNodeId: currentNode.id,
+    })
+    const moveResult = {
+      roll,
+      fromIndex: currentTrackIndex,
+      toIndex: nextTrackIndex,
+      landingLabel: landingCell.kind === 'node'
+        ? routeNodes.find((node) => node.id === landingCell.nodeId)?.title ?? landingCell.nodeId
+        : landingCell.label,
+    }
+
+    appendJourneyEvent({
+      type: 'move',
+      nodeId: nextNodeId,
+      label: `掷出 ${roll} 点，落到 ${getTrackCellLabel(nextTrackIndex)}`,
+      detail: nextBoardEvent ? `触发事件：${nextBoardEvent.title}` : '落到主线地点',
+    })
+
+    if (nextBoardEvent) {
+      appendJourneyEvent({
+        type: 'event',
+        nodeId: nextNodeId,
+        label: `触发棋盘事件：${nextBoardEvent.title}`,
+        detail: `${nextBoardEvent.subtitle}。${nextBoardEvent.storyHook}`,
+      })
+    }
+
+    setWalkFromTrackIndex(currentTrackIndex)
+    setCurrentTrackIndex(nextTrackIndex)
+    setCurrentNodeId(nextNodeId)
+    setActiveBoardEvent(nextBoardEvent)
+    setLastMove(moveResult)
     setPlayerStamina((value) => Math.max(0, value - 1))
-    setCurrentNodeIndex((index) => index + 1)
     setScreen('board')
   }
 
   const completeBoardWalk = useCallback(() => {
-    setWalkFromNodeId(null)
+    setWalkFromTrackIndex(null)
   }, [])
 
   const openCardAlbum = (cardId: string) => {
@@ -195,7 +262,11 @@ function App() {
     setGameMode('local')
     setAiConfig(undefined)
     setJourneyLog([])
-    setCurrentNodeIndex(0)
+    setCurrentNodeId(routeNodes[0].id)
+    setCurrentTrackIndex(0)
+    setWalkFromTrackIndex(null)
+    setActiveBoardEvent(null)
+    setLastMove(null)
     setCompletedNodeIds([])
     setCollectedCardIds([])
     setSelectedElements({})
@@ -204,7 +275,6 @@ function App() {
     setActiveChoice(null)
     setSelectedCardId(defaultSelectedCardId)
     setMemoryLine('我把今天的脚步留在北京的轴线上。')
-    setWalkFromNodeId(null)
     setPlayerStamina(maxPlayerStamina)
   }
 
@@ -214,9 +284,12 @@ function App() {
       {screen === 'board' && (
         <BoardScreen
           currentNode={currentNode}
+          currentTrackIndex={currentTrackIndex}
+          activeBoardEvent={activeBoardEvent}
+          lastMove={lastMove}
           completedNodeIds={completedNodeIds}
           collectedCardIds={collectedCardIds}
-          walkFromNodeId={walkFromNodeId}
+          walkFromTrackIndex={walkFromTrackIndex}
           playerStamina={playerStamina}
           maxPlayerStamina={maxPlayerStamina}
           onOpenNode={() => navigate('photo')}
@@ -228,6 +301,8 @@ function App() {
       {screen === 'photo' && (
         <PhotoTriggerScreen
           node={currentNode}
+          trackIndex={currentTrackIndex}
+          boardEvent={activeBoardEvent}
           selectedElements={selectedElements[currentNode.id] ?? []}
           photoName={photoNames[currentNode.id]}
           onBack={() => navigate('board')}
@@ -248,6 +323,8 @@ function App() {
       {screen === 'theater' && (
         <TheaterScreen
           node={currentNode}
+          trackIndex={currentTrackIndex}
+          boardEvent={activeBoardEvent}
           diceFace={activeDice}
           selectedElements={selectedElements[currentNode.id] ?? []}
           photoName={photoNames[currentNode.id]}
@@ -272,6 +349,8 @@ function App() {
       {screen === 'mission' && (
         <MissionScreen
           node={currentNode}
+          trackIndex={currentTrackIndex}
+          boardEvent={activeBoardEvent}
           memoryLine={memoryLine}
           onBack={() => navigate('theater')}
           onMemoryChange={setMemoryLine}

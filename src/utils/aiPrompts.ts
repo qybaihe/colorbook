@@ -1,5 +1,6 @@
 import type { DiceFace, DialogueChoice, RouteNode } from '../data/beijingGame'
 import type { GameCard } from '../data/gameCards'
+import type { BoardEvent } from '../data/randomEvents'
 import type { JourneyEvent } from '../types'
 
 type TheaterPromptOptions = {
@@ -9,6 +10,7 @@ type TheaterPromptOptions = {
   photoName?: string
   roleBio: string
   activeChoice: DialogueChoice | null
+  boardEvent?: BoardEvent | null
   journeyLog: JourneyEvent[]
 }
 
@@ -45,6 +47,7 @@ export function createTheaterMessages({
   photoName,
   roleBio,
   activeChoice,
+  boardEvent,
   journeyLog,
 }: TheaterPromptOptions) {
   const elements = selectedElements.length ? selectedElements.join('、') : node.photoTags.slice(0, 3).join('、')
@@ -66,6 +69,9 @@ export function createTheaterMessages({
         `角色口吻：${node.roleTone}`,
         `角色补充：${roleBio}`,
         `固定舞台线索：${node.stageLine}`,
+        boardEvent
+          ? `本回合棋盘事件：${boardEvent.title} / ${boardEvent.subtitle}。${boardEvent.description} ${boardEvent.storyHook}`
+          : '本回合棋盘事件：无，落到主线地点。',
         `现场元素：${elements}`,
         `照片记录：${photoName || '玩家尚未上传文件名，可能使用了手选现场元素继续。'}`,
         `骰面：${diceFace.name}。${diceFace.meaning}`,

@@ -155,28 +155,36 @@ function createTravelogue({
   memoryLine,
   completedNodes,
   earnedCards,
+  journeyLog,
 }: {
   title: string
   playerName: string
   memoryLine: string
   completedNodes: RouteNode[]
   earnedCards: GameCard[]
+  journeyLog: JourneyEvent[]
 }) {
   const storyNodes = completedNodes.length ? completedNodes : routeNodes.slice(0, 1)
   const roleNames = storyNodes.map((node) => node.roleName).join('、')
   const cardNames = earnedCards.map((card) => card.name)
+  const moveEvents = journeyLog.filter((event) => event.type === 'move' || event.type === 'event').slice(-10)
+  const diceTrail = moveEvents.length
+    ? `这一局不是照着一条固定线走完的。骰子把路线打散：${moveEvents.map((event) => event.label.replace(/^触发棋盘事件：/, '')).join('，')}。这些转折像临时盖下的章，让每一站都带着一点偶然。`
+    : '这一局从前门轻轻起步，路线还没有完全展开，但棋盘已经把偶然留在纸页边上。'
   const intro = completedNodes.length
     ? `亲爱的北京：我是${playerName}。我把这一局棋收进纸页。格子退到身后，${storyNodes.map((node) => node.subtitle).join('、')}次第亮起，像一串沿中轴落下的朱印。`
     : `亲爱的北京：我是${playerName}。这封短笺尚未写完。我刚把棋子放到中轴线上，纸页已经等着第一阵脚步声。`
 
-  const nodeParagraphs = storyNodes.map((node) => {
+  const nodeParagraphs = storyNodes.map((node, index) => {
     const copy = nodeFinaleCopy[node.id]
     const nodeCards = getNodeCards(node, earnedCards)
     const cardLine = nodeCards.length
       ? `我把${nodeCards.map((card) => `《${card.name}》`).join('、')}夹进这一页，像把一枚枚小小的城印按在旅途中。`
       : '这一页先留出空白，等下一次脚步把它点亮。'
 
-    return `${copy.routeLine}。我在那里遇见${node.roleName}，${copy.sensory}。${copy.realization}${cardLine}`
+    const eventEcho = moveEvents[index]?.detail ? `这一段还带着一枚事件的背面：${moveEvents[index].detail}。` : ''
+
+    return `${copy.routeLine}。我在那里遇见${node.roleName}，${copy.sensory}。${copy.realization}${eventEcho}${cardLine}`
   })
 
   const cardSummary = cardNames.length
@@ -189,7 +197,7 @@ function createTravelogue({
 
   const ending = `如果要把什么留给未来，我会留下这句话：“${memoryLine}” 也留下我遇见的${roleNames || '陌生人'}、我听见的城市回声，以及一个很小的愿望：后来的人再走到这里时，眼前有景，耳边有声，心里有一条能回家的北京。`
 
-  const typedStory = [intro, ...nodeParagraphs, cardSummary, truth, ending].join('\n\n')
+  const typedStory = [intro, diceTrail, ...nodeParagraphs, cardSummary, truth, ending].join('\n\n')
   const saveText = createSaveText({
     title,
     playerName,
@@ -283,8 +291,8 @@ export function FinaleScreen({
   )
   const displayName = playerName.trim() || '时空旅人'
   const localTravelogue = useMemo(
-    () => createTravelogue({ title, playerName: displayName, memoryLine, completedNodes, earnedCards }),
-    [completedNodes, displayName, earnedCards, memoryLine, title],
+    () => createTravelogue({ title, playerName: displayName, memoryLine, completedNodes, earnedCards, journeyLog }),
+    [completedNodes, displayName, earnedCards, journeyLog, memoryLine, title],
   )
   const travelogue = gameMode === 'ai' && aiTravelogue ? aiTravelogue : localTravelogue
   const { displayedText, finish, isDone } = useTypewriter(phase === 'story' ? travelogue.typedStory : '')

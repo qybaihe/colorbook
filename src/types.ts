@@ -22,6 +22,8 @@ export type GameSetup = {
 
 export type JourneyEventType =
   | 'mode'
+  | 'move'
+  | 'event'
   | 'photo'
   | 'element'
   | 'dice'

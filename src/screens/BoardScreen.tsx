@@ -2,12 +2,16 @@ import { BoardView } from '../components/BoardView'
 import { CardHand } from '../components/CardHand'
 import { CurrentTurnPanel } from '../components/CurrentTurnPanel'
 import type { RouteNode } from '../data/beijingGame'
+import type { BoardEvent, MoveResult } from '../data/randomEvents'
 
 export function BoardScreen({
   currentNode,
+  currentTrackIndex,
+  activeBoardEvent,
+  lastMove,
   completedNodeIds,
   collectedCardIds,
-  walkFromNodeId,
+  walkFromTrackIndex,
   playerStamina,
   maxPlayerStamina,
   onOpenNode,
@@ -16,9 +20,12 @@ export function BoardScreen({
   onWalkComplete,
 }: {
   currentNode: RouteNode
+  currentTrackIndex: number
+  activeBoardEvent: BoardEvent | null
+  lastMove: MoveResult | null
   completedNodeIds: string[]
   collectedCardIds: string[]
-  walkFromNodeId: string | null
+  walkFromTrackIndex: number | null
   playerStamina: number
   maxPlayerStamina: number
   onOpenNode: () => void
@@ -36,15 +43,18 @@ export function BoardScreen({
       </div>
 
       <BoardView
-        currentNode={currentNode}
+        currentTrackIndex={currentTrackIndex}
         completedNodeIds={completedNodeIds}
-        walkFromNodeId={walkFromNodeId}
+        walkFromTrackIndex={walkFromTrackIndex}
         onOpenNode={onOpenNode}
         onWalkComplete={onWalkComplete}
       />
 
       <CurrentTurnPanel
         currentNode={currentNode}
+        currentTrackIndex={currentTrackIndex}
+        activeBoardEvent={activeBoardEvent}
+        lastMove={lastMove}
         completedNodeIds={completedNodeIds}
         playerStamina={playerStamina}
         maxPlayerStamina={maxPlayerStamina}

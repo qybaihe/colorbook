@@ -1005,7 +1005,8 @@ small {
   z-index: 12;
 }
 
-.node-cell.active::before {
+.node-cell.active::before,
+.event-cell.active::before {
   opacity: 1;
   inset: -10px;
   border-radius: 22px;
@@ -1021,7 +1022,8 @@ small {
   animation: tile-glow 1.5s ease-in-out infinite;
 }
 
-.node-cell.active .board-cell-image {
+.node-cell.active .board-cell-image,
+.event-cell.active .board-cell-image {
   filter:
     drop-shadow(0 0 8px rgba(255, 231, 156, 0.88))
     drop-shadow(0 10px 18px rgba(31, 42, 39, 0.2))
@@ -1164,6 +1166,98 @@ small {
 
 .turn-panel > .turn-intro > p:last-child {
   font-size: 13px;
+  line-height: 1.45;
+}
+
+.turn-random-panel {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  background:
+    linear-gradient(135deg, rgba(40, 102, 91, 0.14), rgba(183, 121, 36, 0.15)),
+    rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(183, 121, 36, 0.22);
+  border-radius: 8px;
+}
+
+.turn-dice-result {
+  min-height: 48px;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  color: #fff8ea;
+  background: linear-gradient(135deg, var(--red), var(--teal));
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 234, 0.18);
+}
+
+.turn-dice-result strong {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.turn-random-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.turn-random-copy span,
+.turn-random-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.turn-random-copy span {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.turn-random-copy small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.turn-event-card {
+  display: grid;
+  gap: 4px;
+  padding: 9px 10px;
+  background:
+    linear-gradient(135deg, rgba(255, 248, 234, 0.86), rgba(239, 232, 213, 0.72)),
+    repeating-linear-gradient(45deg, rgba(150, 52, 46, 0.04) 0 1px, transparent 1px 14px);
+  border: 1px solid rgba(150, 52, 46, 0.18);
+  border-left: 4px solid var(--red);
+  border-radius: 8px;
+}
+
+.turn-event-card strong,
+.turn-event-card span,
+.turn-event-card small {
+  min-width: 0;
+}
+
+.turn-event-card strong {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.turn-event-card span {
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.turn-event-card small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
   line-height: 1.45;
 }
 

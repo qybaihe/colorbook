@@ -3,7 +3,8 @@ import { ArrowRight, ChevronLeft, Dice6 } from 'lucide-react'
 import type { DialogueChoice, DiceFace, RouteNode } from '../data/beijingGame'
 import { nodeRoleAssets } from '../data/beijingAssets'
 import { assetUrl } from '../data/beijingAssets'
-import { getNodeSceneMeta } from '../data/tileScenes'
+import type { BoardEvent } from '../data/randomEvents'
+import { getTurnSceneMeta } from '../data/tileScenes'
 import type { AiEndpointConfig, GameMode, JourneyEvent } from '../types'
 import { createTheaterMessages } from '../utils/aiPrompts'
 import { requestOpenAiText } from '../utils/openAiCompatible'
@@ -34,6 +35,8 @@ function TypewriterCopy({ text }: { text: string }) {
 
 export function TheaterScreen({
   node,
+  trackIndex,
+  boardEvent,
   diceFace,
   selectedElements,
   photoName,
@@ -46,6 +49,8 @@ export function TheaterScreen({
   onMission,
 }: {
   node: RouteNode
+  trackIndex: number
+  boardEvent: BoardEvent | null
   diceFace: DiceFace
   selectedElements: string[]
   photoName?: string
@@ -57,7 +62,7 @@ export function TheaterScreen({
   onChoice: (choice: DialogueChoice) => void
   onMission: () => void
 }) {
-  const scene = getNodeSceneMeta(node.id)
+  const scene = getTurnSceneMeta(node.id, trackIndex, boardEvent)
   const selectedElementKey = selectedElements.join('|')
   const promptElements = useMemo(
     () => (selectedElementKey ? selectedElementKey.split('|') : []),
@@ -73,13 +78,16 @@ export function TheaterScreen({
   }>({ status: 'idle', text: '' })
   const localTypedSource = useMemo(
     () => {
-      const opening = `${node.stageLine}\n\n${scene.roleBio}\n\n我从现场看见了 ${elementText}。这次骰面是「${diceFace.name}」，${diceFace.meaning}`
+      const eventLine = boardEvent
+        ? `\n\n你这回不是按固定路线走来，而是落在「${boardEvent.title}」。${boardEvent.storyHook}`
+        : ''
+      const opening = `${node.stageLine}${eventLine}\n\n${scene.roleBio}\n\n我从现场看见了 ${elementText}。这次骰面是「${diceFace.name}」，${diceFace.meaning}`
 
       if (!activeChoice) return opening
 
       return `你问：「${activeChoice.prompt}」\n\n${node.roleName}答：${activeChoice.reply}\n\n这句回应会写入这一格的现场记录，并影响后续现实任务的语气。`
     },
-    [activeChoice, diceFace.meaning, diceFace.name, elementText, node.roleName, node.stageLine, scene.roleBio],
+    [activeChoice, boardEvent, diceFace.meaning, diceFace.name, elementText, node.roleName, node.stageLine, scene.roleBio],
   )
   const typedSource = gameMode === 'ai' && aiState.status === 'success' ? aiState.text : localTypedSource
 
@@ -104,6 +112,7 @@ export function TheaterScreen({
         photoName,
         roleBio: scene.roleBio,
         activeChoice,
+        boardEvent,
         journeyLog,
       }),
     })
@@ -123,6 +132,7 @@ export function TheaterScreen({
   }, [
     activeChoice,
     aiConfig,
+    boardEvent,
     diceFace,
     gameMode,
     journeyLog,
