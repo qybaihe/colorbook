@@ -70,6 +70,8 @@
 
 安装包内置完整游戏资产，不需要后端服务。macOS 首次打开未签名 DMG 时，可能需要在「系统设置 → 隐私与安全性」里允许打开。Android APK 使用调试签名，适合测试安装；iOS IPA 未签名，需要使用自己的 Apple 开发者证书重新签名后安装。
 
+如果需要更快下载和安装，可以选择 `lite-v*` Release 里的轻量版安装包。轻量版会在打包前临时压缩主要图片素材，完整游戏流程不变。
+
 ### 环境要求
 
 - Node.js 20 或更新版本
@@ -111,6 +113,14 @@ npm run android:apk
 ```
 
 仓库已配置 GitHub Actions：推送 `v*` 标签时，会自动在 macOS、Windows、Ubuntu runner 上构建 DMG、EXE、APK 和未签名 IPA，并挂到对应 GitHub Release。
+
+### 轻量版构建
+
+```bash
+npm run assets:lite
+```
+
+这条命令会压缩当前工作区的 `public` 图片资产；本地使用前请确认你是在临时副本或干净工作区中执行。GitHub Actions 的 `lite-v*` 标签会在云端临时执行压缩，不会改写仓库里的高清原图。
 
 ### 代码检查
 
@@ -186,6 +196,7 @@ npm run lint
 - `electron/main.cjs`：桌面版入口，负责加载生产构建后的游戏和本地资源。
 - `capacitor.config.ts`：移动端应用 ID、应用名和 Web 构建目录配置。
 - `scripts/generate-app-icons.mjs`：从统一图标源生成 Electron、Android、iOS 所需图标。
+- `scripts/prepare-lite-assets.mjs`：为轻量安装包临时压缩主要图片资产。
 - `android/`：Android 原生容器，可构建调试签名 APK。
 - `ios/`：iOS 原生容器，可构建未签名 IPA，后续可接 Apple 证书签名。
 - `.github/workflows/release-packages.yml`：GitHub Actions 全平台自动出包与 Release 发布流程。
