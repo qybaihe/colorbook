@@ -43,11 +43,19 @@ export function EntryScreen({ onStart }: { onStart: () => void }) {
           />
         ))}
       </div>
-      <img
-        alt="此地有回声"
-        className="entry-title-art"
-        src="/assets/city-select/echo-title-calligraphy.png"
-      />
+      <div className="entry-brand-lockup" aria-label="此地有回声">
+        <img
+          alt=""
+          aria-hidden="true"
+          className="entry-app-icon"
+          src="/assets/app-icon/colorbook-app-icon-1024.png"
+        />
+        <img
+          alt="此地有回声"
+          className="entry-title-art"
+          src="/assets/city-select/echo-title-calligraphy.png"
+        />
+      </div>
 
       <div className="city-choice-panel" aria-label="城市章节选择">
         <div className="chapter-cards" aria-label="城市章节">

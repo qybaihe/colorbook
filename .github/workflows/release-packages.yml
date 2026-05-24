@@ -1,0 +1,189 @@
+name: Build Release Packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  desktop:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS DMG
+            os: macos-latest
+            command: npm run desktop:build -- --mac dmg --x64 --arm64
+            artifact: macos-dmg
+            files: release/*.dmg
+          - name: Windows EXE
+            os: windows-latest
+            command: npm run desktop:build -- --win nsis --x64
+            artifact: windows-exe
+            files: release/*.exe
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Build desktop package
+        run: ${{ matrix.command }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.files }}
+          if-no-files-found: error
+
+  android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Sync Capacitor
+        run: npm run mobile:sync
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Collect APK
+        shell: bash
+        run: |
+          mkdir -p release-mobile
+          cp android/app/build/outputs/apk/debug/app-debug.apk "release-mobile/Colorbook-Beijing-${GITHUB_REF_NAME#v}-android-debug.apk"
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: release-mobile/*.apk
+          if-no-files-found: error
+
+  ios:
+    name: Build iOS IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Sync Capacitor
+        run: npm run mobile:sync
+
+      - name: Build unsigned iOS app
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath ios/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package unsigned IPA
+        shell: bash
+        run: |
+          mkdir -p release-mobile/ios/Payload
+          APP_PATH="$(find ios/DerivedData/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -type d | head -n 1)"
+          test -n "$APP_PATH"
+          cp -R "$APP_PATH" release-mobile/ios/Payload/
+          (cd release-mobile/ios && zip -qry "../Colorbook-Beijing-${GITHUB_REF_NAME#v}-ios-unsigned.ipa" Payload)
+
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: release-mobile/*.ipa
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    needs:
+      - desktop
+      - android
+      - ios
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 此地有回声 ${{ github.ref_name }}
+          files: release-artifacts/*
+          body: |
+            《此地有回声：北京中轴入局》全平台试玩版。
+
+            - `Colorbook-Beijing-*-mac-arm64.dmg`：Apple Silicon Mac。
+            - `Colorbook-Beijing-*-mac-x64.dmg`：Intel Mac。
+            - `Colorbook-Beijing-*-windows-x64.exe`：Windows 64 位安装包。
+            - `Colorbook-Beijing-*-android-debug.apk`：Android 调试签名 APK，可直接安装测试。
+            - `Colorbook-Beijing-*-ios-unsigned.ipa`：iOS 未签名 IPA，需要使用自己的 Apple 开发者证书重新签名后安装。
+
+            当前版本为本地演示原型，不需要后端服务、不需要登录，也不调用真实 AI 接口。

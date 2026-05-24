@@ -1,7 +1,7 @@
 {
   "name": "colorbook",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "北京中轴入局：AI 城市时空棋局横屏桌游原型",
   "author": "qybaihe",
   "type": "module",
@@ -10,15 +10,22 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "desktop:build": "npm run build && electron-builder --publish never",
+    "icons:generate": "node scripts/generate-app-icons.mjs",
+    "mobile:sync": "npm run build && cap sync",
+    "android:apk": "npm run mobile:sync && cd android && ./gradlew assembleDebug",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/core": "^8.3.4",
     "lucide-react": "^1.16.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/ios": "^8.3.4",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
@@ -30,6 +37,8 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12"
@@ -37,6 +46,7 @@
   "build": {
     "appId": "com.qybaihe.colorbook",
     "productName": "此地有回声",
+    "icon": "build/icon.png",
     "directories": {
       "output": "release"
     },
@@ -47,6 +57,7 @@
     ],
     "mac": {
       "category": "public.app-category.games",
+      "icon": "build/icon.icns",
       "target": [
         {
           "target": "dmg",
@@ -61,6 +72,7 @@
       "artifactName": "Colorbook-Beijing-${version}-mac-${arch}.${ext}"
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         {
           "target": "nsis",

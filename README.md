@@ -58,15 +58,17 @@
 
 ## 快速启动
 
-### 直接下载桌面版
+### 直接下载安装包
 
-如果不想配置 Node.js，可以在 GitHub Releases 下载桌面安装包：
+如果不想配置 Node.js，可以在 GitHub Releases 下载各平台安装包：
 
 - macOS Apple Silicon：下载 `Colorbook-Beijing-*-mac-arm64.dmg`
 - macOS Intel：下载 `Colorbook-Beijing-*-mac-x64.dmg`
 - Windows 64 位：下载 `Colorbook-Beijing-*-windows-x64.exe`
+- Android：下载 `Colorbook-Beijing-*-android-debug.apk`
+- iOS：下载 `Colorbook-Beijing-*-ios-unsigned.ipa`
 
-桌面版内置完整游戏资产，不需要后端服务。macOS 首次打开未签名 DMG 时，可能需要在「系统设置 → 隐私与安全性」里允许打开。
+安装包内置完整游戏资产，不需要后端服务。macOS 首次打开未签名 DMG 时，可能需要在「系统设置 → 隐私与安全性」里允许打开。Android APK 使用调试签名，适合测试安装；iOS IPA 未签名，需要使用自己的 Apple 开发者证书重新签名后安装。
 
 ### 环境要求
 
@@ -101,7 +103,14 @@ npm run desktop:build -- --mac dmg
 npm run desktop:build -- --win nsis
 ```
 
-仓库已配置 GitHub Actions：推送 `v*` 标签时，会自动在 macOS/Windows runner 上构建 DMG 和 EXE，并挂到对应 GitHub Release。
+### 移动端构建
+
+```bash
+npm run mobile:sync
+npm run android:apk
+```
+
+仓库已配置 GitHub Actions：推送 `v*` 标签时，会自动在 macOS、Windows、Ubuntu runner 上构建 DMG、EXE、APK 和未签名 IPA，并挂到对应 GitHub Release。
 
 ### 代码检查
 
@@ -132,6 +141,7 @@ npm run lint
 - `public/assets/beijing/role-cards/`：剧场角色卡图。
 - `public/assets/beijing/board/`：棋盘中心地图与棋盘相关素材。
 - `public/assets/beijing/ui/`：上传框、对话框、奖励光效、印章等 UI 组件素材。
+- `public/assets/app-icon/`：应用图标与首页品牌图标资产。
 - `public/audio/`：北京篇 BGM 与交互音效。
 - `docs/screenshots/`：README 展示截图，由浏览器自动化从当前版本生成。
 
@@ -140,6 +150,7 @@ npm run lint
 - React 19
 - TypeScript
 - Vite
+- Capacitor
 - lucide-react 图标
 - 原生 CSS 变量与响应式舞台布局
 - 本地 TypeScript 内容配置，无后端依赖
@@ -158,8 +169,14 @@ npm run lint
 │   ├── App.tsx               # 主流程状态机
 │   └── App.css               # 横屏桌游视觉系统
 ├── electron/                 # Electron 桌面壳与本地资源协议
-├── .github/workflows/        # 自动构建 DMG / EXE 并发布 Release
+├── android/                  # Capacitor Android 容器
+├── ios/                      # Capacitor iOS 容器
+├── assets/app-icon/          # 应用图标源资产
+├── build/                    # 桌面端图标资源
+├── scripts/                  # 图标生成脚本
+├── .github/workflows/        # 自动构建 DMG / EXE / APK / IPA 并发布 Release
 ├── docs/screenshots/         # README 截图
+├── capacitor.config.ts
 ├── package.json
 └── vite.config.ts
 ```
@@ -167,7 +184,11 @@ npm run lint
 ## 关键文件
 
 - `electron/main.cjs`：桌面版入口，负责加载生产构建后的游戏和本地资源。
-- `.github/workflows/desktop-release.yml`：GitHub Actions 桌面自动出包与 Release 发布流程。
+- `capacitor.config.ts`：移动端应用 ID、应用名和 Web 构建目录配置。
+- `scripts/generate-app-icons.mjs`：从统一图标源生成 Electron、Android、iOS 所需图标。
+- `android/`：Android 原生容器，可构建调试签名 APK。
+- `ios/`：iOS 原生容器，可构建未签名 IPA，后续可接 Apple 证书签名。
+- `.github/workflows/release-packages.yml`：GitHub Actions 全平台自动出包与 Release 发布流程。
 - `src/App.tsx`：页面流程、玩家状态、卡牌收集与任务完成逻辑。
 - `src/data/boardTrack.ts`：24 格棋盘顺序、坐标和棋子走格路径。
 - `src/data/beijingGame.ts`：5 个主线地点、角色、任务、骰面和奖励规则。
@@ -194,7 +215,8 @@ npm run lint
 - 拍照上传只记录文件名，不做真实图像识别。
 - 声音任务为交互模拟，尚未接麦克风录音分析。
 - 地图、定位、天气接口尚未接入。
-- 当前重点是横屏路演和本地演示，移动端体验不是主要目标。
+- 移动端包已可构建，但当前交互仍优先按横屏路演体验设计。
+- iOS IPA 默认未签名，真机安装需要接入 Apple 开发者证书或后续走 TestFlight。
 
 ## 许可证与素材说明
 

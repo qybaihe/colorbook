@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 release
+release-mobile
+build/ico-sizes/
+build/icon.iconset/
 *.local
 
 # Editor directories and files
@@ -28,4 +31,5 @@ release
 backups/
 output/
 .playwright-cli/
+tmp/
 *.png.tmp

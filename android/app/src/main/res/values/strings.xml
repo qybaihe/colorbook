@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">此地有回声</string>
+    <string name="title_activity_main">此地有回声</string>
+    <string name="package_name">com.qybaihe.colorbook</string>
+    <string name="custom_url_scheme">com.qybaihe.colorbook</string>
+</resources>
