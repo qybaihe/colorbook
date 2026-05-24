@@ -1,4 +1,4 @@
-import { readdirSync, statSync } from 'node:fs'
+import { readdirSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 
@@ -73,7 +73,7 @@ async function optimizeImage(filePath) {
   }
 
   if (output.length < before) {
-    await sharp(output).toFile(filePath)
+    writeFileSync(filePath, output)
   }
 
   return {
