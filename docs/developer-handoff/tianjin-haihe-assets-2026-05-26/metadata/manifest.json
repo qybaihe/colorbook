@@ -1,0 +1,716 @@
+{
+  "package": "????????GitHub final assets",
+  "cards": [
+    {
+      "index": 1,
+      "file": "cards/card-01-haihe-letter.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2642496
+    },
+    {
+      "index": 2,
+      "file": "cards/card-02-bridge.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2748308
+    },
+    {
+      "index": 3,
+      "file": "cards/card-03-port-trade.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2609623
+    },
+    {
+      "index": 4,
+      "file": "cards/card-04-concession-window.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2643295
+    },
+    {
+      "index": 5,
+      "file": "cards/card-05-folk-craft.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2774494
+    },
+    {
+      "index": 6,
+      "file": "cards/card-06-river-sound.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2626625
+    },
+    {
+      "index": 7,
+      "file": "cards/card-07-night-light.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2596169
+    },
+    {
+      "index": 8,
+      "file": "cards/card-08-time-event.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2709472
+    },
+    {
+      "index": 9,
+      "file": "cards/card-09-river-object-event.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2673446
+    },
+    {
+      "index": 10,
+      "file": "cards/card-10-letter-event.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2683408
+    },
+    {
+      "index": 11,
+      "file": "cards/card-11-sound-event.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2798281
+    },
+    {
+      "index": 12,
+      "file": "cards/card-12-route-turn-event.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2676616
+    },
+    {
+      "index": 13,
+      "file": "cards/card-13-echo-event.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2814224
+    },
+    {
+      "index": 14,
+      "file": "cards/card-14-first-letter.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2684436
+    },
+    {
+      "index": 15,
+      "file": "cards/card-15-bridge-witness.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2646848
+    },
+    {
+      "index": 16,
+      "file": "cards/card-16-facade-reader.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2676502
+    },
+    {
+      "index": 17,
+      "file": "cards/card-17-market-flavor.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2594658
+    },
+    {
+      "index": 18,
+      "file": "cards/card-18-tram-memory.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2627471
+    },
+    {
+      "index": 19,
+      "file": "cards/card-19-family-detective.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2830290
+    },
+    {
+      "index": 20,
+      "file": "cards/card-20-return-postcard.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2939858
+    },
+    {
+      "index": 21,
+      "file": "cards/card-21-clock-hand.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2830216
+    },
+    {
+      "index": 22,
+      "file": "cards/card-22-river-ripple.png",
+      "source": "deck-transparent",
+      "size": [
+        1000,
+        1430
+      ],
+      "mode": "RGBA",
+      "bytes": 2819948
+    },
+    {
+      "index": 23,
+      "file": "cards/card-23-brick-window.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1359616
+    },
+    {
+      "index": 24,
+      "file": "cards/card-24-boat-whistle.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1378696
+    },
+    {
+      "index": 25,
+      "file": "cards/card-25-folk-pattern.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1575254
+    },
+    {
+      "index": 26,
+      "file": "cards/card-26-missed-letter.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1392261
+    },
+    {
+      "index": 27,
+      "file": "cards/card-27-safe-riverbank.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1413383
+    },
+    {
+      "index": 28,
+      "file": "cards/card-28-hint.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1507563
+    },
+    {
+      "index": 29,
+      "file": "cards/card-29-ferry-ticket.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1510035
+    },
+    {
+      "index": 30,
+      "file": "cards/card-30-time-boost.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1523832
+    },
+    {
+      "index": 31,
+      "file": "cards/card-31-weather-backup.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1484117
+    },
+    {
+      "index": 32,
+      "file": "cards/card-32-river-postman.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1397479
+    },
+    {
+      "index": 33,
+      "file": "cards/card-33-bridge-keeper.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1394201
+    },
+    {
+      "index": 34,
+      "file": "cards/card-34-concession-banker.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1353773
+    },
+    {
+      "index": 35,
+      "file": "cards/card-35-folk-artist.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1398965
+    },
+    {
+      "index": 36,
+      "file": "cards/card-36-teahouse-storyteller.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1406446
+    },
+    {
+      "index": 37,
+      "file": "cards/card-37-tram-conductor.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1391634
+    },
+    {
+      "index": 38,
+      "file": "cards/card-38-five-avenues-resident.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1382598
+    },
+    {
+      "index": 39,
+      "file": "cards/card-39-port-worker.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1416172
+    },
+    {
+      "index": 40,
+      "file": "cards/card-40-night-lamplighter.png",
+      "source": "deck-image2-transparent",
+      "size": [
+        800,
+        1144
+      ],
+      "mode": "RGBA",
+      "bytes": 1389847
+    }
+  ],
+  "tile_scenes": [
+    {
+      "index": 1,
+      "file": "tile-scenes-image2/tile-01-century-clock-letter.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a14926da40c81918a1a575978416ee6.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 317928
+    },
+    {
+      "index": 2,
+      "file": "tile-scenes-image2/tile-02-echo-first-line.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a1492cc2ce48191be99e094919fa7e0.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 248230
+    },
+    {
+      "index": 3,
+      "file": "tile-scenes-image2/tile-03-fate-first-turn.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a149327707c8191930b1ece6dde7384.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 330259
+    },
+    {
+      "index": 4,
+      "file": "tile-scenes-image2/tile-04-dice-event.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a1493836f208191a85c2f4e927753c0.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 254049
+    },
+    {
+      "index": 5,
+      "file": "tile-scenes-image2/tile-05-riverbank-sound.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a14946f10848191a6103d95b7e540d1.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 261155
+    },
+    {
+      "index": 6,
+      "file": "tile-scenes-image2/tile-06-jiefang-bridge-photo.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a1494d6a98c8191b146a6931705e2d1.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 307452
+    },
+    {
+      "index": 7,
+      "file": "tile-scenes-image2/tile-07-bridge-letter.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a14969051988191b2bb418bc3b089bf.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 283487
+    },
+    {
+      "index": 8,
+      "file": "tile-scenes-image2/tile-08-jiefang-road-facade.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a1496efa0b88191ab1284120f57a222.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 286442
+    },
+    {
+      "index": 9,
+      "file": "tile-scenes-image2/tile-09-banker-account.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a14976345388191b8825e0ae8ec71d9.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 265061
+    },
+    {
+      "index": 10,
+      "file": "tile-scenes-image2/tile-10-ancient-culture-street.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a1497d766a48191a336bf212018f2ba.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 317481
+    },
+    {
+      "index": 11,
+      "file": "tile-scenes-image2/tile-11-teahouse-sound.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e5fc8-d375-7be2-a364-de13f8e4f8a7\\ig_0cc1c53684f14f5a016a14984e5cac81918f02c059eb145839.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 263562
+    },
+    {
+      "index": 12,
+      "file": "tile-scenes-image2/tile-12-midpoint-postcard.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14aca6341c8191b19f97ceda97e49e.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 231382
+    },
+    {
+      "index": 13,
+      "file": "tile-scenes-image2/tile-13-reality-check.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14ad27bdb48191bc87516b9e54b03a.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 258614
+    },
+    {
+      "index": 14,
+      "file": "tile-scenes-image2/tile-14-italian-style-turn.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14ad909c9c8191a8d9451cded9a2fe.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 219205
+    },
+    {
+      "index": 15,
+      "file": "tile-scenes-image2/tile-15-missed-letter.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14add3a3788191af6b4e534bd4feac.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 234435
+    },
+    {
+      "index": 16,
+      "file": "tile-scenes-image2/tile-16-five-avenues-courtyard.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14ae20352c81919f31a8e265dd258e.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 234769
+    },
+    {
+      "index": 17,
+      "file": "tile-scenes-image2/tile-17-family-bridge-hunt.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14ae6fb7108191b3c15914b0e0a4ff.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 242395
+    },
+    {
+      "index": 18,
+      "file": "tile-scenes-image2/tile-18-port-whistle.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14aeb4d558819185ac998cff7a049d.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 204312
+    },
+    {
+      "index": 19,
+      "file": "tile-scenes-image2/tile-19-river-ripple-photo.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14af0012f081919ef989cc3f1f374f.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 232856
+    },
+    {
+      "index": 20,
+      "file": "tile-scenes-image2/tile-20-night-light-dice.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14b162a4e48191befc7d5b2a4eb7e2.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 240351
+    },
+    {
+      "index": 21,
+      "file": "tile-scenes-image2/tile-21-cocreate-river-seal.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14b1b056fc8191ba3a5e8c0c94eb18.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 260969
+    },
+    {
+      "index": 22,
+      "file": "tile-scenes-image2/tile-22-weather-riverbank.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14b1fe448c8191acf79e297336358b.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 261425
+    },
+    {
+      "index": 23,
+      "file": "tile-scenes-image2/tile-23-final-letter-array.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14b245db8081918f927f372ecfec51.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 232833
+    },
+    {
+      "index": 24,
+      "file": "tile-scenes-image2/tile-24-haihe-finale.jpg",
+      "source_generated_png": "C:\\Users\\Lenovo\\.codex\\generated_images\\019e6090-e064-79e3-808c-84c2deb34a3e\\ig_0eb435823c4beaf6016a14b4014a4881918bd960e94935c585.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 243042
+    }
+  ],
+  "notes": [
+    "Cards are copied without resizing from the best available transparent PNG source.",
+    "Tile scenes 01-11 come from the original conversation image2 outputs; tile scenes 12-24 were regenerated to match the first-11 sepia cinematic tabletop style.",
+    "Tile scene JPGs keep the original 1672x941 dimensions and are quality-compressed so the final zip can be committed to GitHub under 100MB."
+  ]
+}
