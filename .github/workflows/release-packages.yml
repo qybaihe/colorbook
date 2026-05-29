@@ -96,7 +96,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p release-mobile
-          cp android/app/build/outputs/apk/debug/app-debug.apk "release-mobile/Colorbook-Beijing-${GITHUB_REF_NAME#v}-android-debug.apk"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "release-mobile/Colorbook-Echo-${GITHUB_REF_NAME#v}-android-debug.apk"
 
       - name: Upload Android artifact
         uses: actions/upload-artifact@v4
@@ -148,7 +148,7 @@ jobs:
           APP_PATH="$(find ios/DerivedData/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -type d | head -n 1)"
           test -n "$APP_PATH"
           cp -R "$APP_PATH" release-mobile/ios/Payload/
-          (cd release-mobile/ios && zip -qry "../Colorbook-Beijing-${GITHUB_REF_NAME#v}-ios-unsigned.ipa" Payload)
+          (cd release-mobile/ios && zip -qry "../Colorbook-Echo-${GITHUB_REF_NAME#v}-ios-unsigned.ipa" Payload)
 
       - name: Upload iOS artifact
         uses: actions/upload-artifact@v4
@@ -178,12 +178,14 @@ jobs:
           name: 此地有回声 ${{ github.ref_name }}
           files: release-artifacts/*
           body: |
-            《此地有回声：北京中轴入局》全平台试玩版。
+            《此地有回声》北京中轴与天津海河双城全平台试玩版。
 
-            - `Colorbook-Beijing-*-mac-arm64.dmg`：Apple Silicon Mac。
-            - `Colorbook-Beijing-*-mac-x64.dmg`：Intel Mac。
-            - `Colorbook-Beijing-*-windows-x64.exe`：Windows 64 位安装包。
-            - `Colorbook-Beijing-*-android-debug.apk`：Android 调试签名 APK，可直接安装测试。
-            - `Colorbook-Beijing-*-ios-unsigned.ipa`：iOS 未签名 IPA，需要使用自己的 Apple 开发者证书重新签名后安装。
+            本版新增天津《海河来信》章节、天津卡牌与场景素材，并内置北京/天津角色本地 AI 配音包。默认进入剧场自动播放角色语音，可在页面内关闭。
 
-            默认 `Local Only` 模式不需要后端服务、不需要登录，也不调用外部 AI。入口页可选择 `AI Mode`，填写 OpenAI 兼容 URL、API Key 和模型名后，剧场对白与终局游记会根据玩家行为实时生成。
+            - `Colorbook-Echo-*-mac-arm64.dmg`：Apple Silicon Mac。
+            - `Colorbook-Echo-*-mac-x64.dmg`：Intel Mac。
+            - `Colorbook-Echo-*-windows-x64.exe`：Windows 64 位安装包。
+            - `Colorbook-Echo-*-android-debug.apk`：Android 调试签名 APK，可直接安装测试。
+            - `Colorbook-Echo-*-ios-unsigned.ipa`：iOS 未签名 IPA，需要使用自己的 Apple 开发者证书重新签名后安装。
+
+            默认不需要后端服务、不需要登录，主要剧情、卡牌、音效与角色配音都随安装包离线运行。

@@ -36,6 +36,8 @@ export const assetPaths = {
   cardEcho: 'cards/card-echo.webp',
   cardBack: 'cards/card-back.webp',
   cardLocked: 'cards/card-locked.webp',
+  staminaHeartFull: 'ui/stamina-heart-full.png',
+  staminaHeartEmpty: 'ui/stamina-heart-empty.png',
   uploadFrame: 'ui/upload-frame.webp',
   choiceCard: 'ui/choice-card.webp',
   dialogueFrame: 'ui/dialogue-frame.webp',
@@ -43,6 +45,10 @@ export const assetPaths = {
   completionStamp: 'ui/completion-stamp.webp',
   posterTemplateA: 'ui/poster-template-a.webp',
   posterTemplateB: 'ui/poster-template-b.webp',
+  playerDown: 'sprites/player-down.png',
+  playerUp: 'sprites/player-up.png',
+  playerLeft: 'sprites/player-left.png',
+  playerRight: 'sprites/player-right.png',
 } as const
 
 export type AssetKey = keyof typeof assetPaths

@@ -49,7 +49,7 @@ function createMainWindow() {
     minWidth: 1180,
     minHeight: 720,
     backgroundColor: '#121715',
-    title: '此地有回声：北京中轴入局',
+    title: '此地有回声',
     autoHideMenuBar: true,
     show: false,
     webPreferences: {

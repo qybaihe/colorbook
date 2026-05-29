@@ -1,8 +1,8 @@
 {
   "name": "colorbook",
   "private": true,
-  "version": "1.2.0",
-  "description": "北京中轴入局：AI 城市时空棋局横屏桌游原型",
+  "version": "1.3.0",
+  "description": "此地有回声：北京中轴与天津海河双城时空棋局",
   "author": "qybaihe",
   "type": "module",
   "main": "electron/main.cjs",
@@ -70,7 +70,7 @@
       ]
     },
     "dmg": {
-      "artifactName": "Colorbook-Beijing-${version}-mac-${arch}.${ext}"
+      "artifactName": "Colorbook-Echo-${version}-mac-${arch}.${ext}"
     },
     "win": {
       "icon": "build/icon.ico",
@@ -82,7 +82,7 @@
           ]
         }
       ],
-      "artifactName": "Colorbook-Beijing-${version}-windows-${arch}.${ext}"
+      "artifactName": "Colorbook-Echo-${version}-windows-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,

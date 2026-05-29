@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { ArrowRight, ChevronLeft, Dice6 } from 'lucide-react'
+import { VoiceButton } from '../components/VoiceButton'
 import type { DialogueChoice, DiceFace, RouteNode } from '../data/beijingGame'
-import { nodeRoleAssets } from '../data/beijingAssets'
-import { assetUrl } from '../data/beijingAssets'
-import type { BoardEvent } from '../data/randomEvents'
-import { getTurnSceneMeta } from '../data/tileScenes'
-import type { AiEndpointConfig, GameMode, JourneyEvent } from '../types'
-import { createTheaterMessages } from '../utils/aiPrompts'
-import { requestOpenAiText } from '../utils/openAiCompatible'
+import { useCityPack } from '../data/cityPackRuntime'
+import { getVoiceLineSrc, playVoiceLine, preloadVoiceLines, stopVoiceLine } from '../utils/voice'
+
+const voicePreferenceKey = 'time-chess-voice-enabled'
 
 function TypewriterCopy({ text }: { text: string }) {
   const [typedText, setTypedText] = useState('')
@@ -35,113 +33,94 @@ function TypewriterCopy({ text }: { text: string }) {
 
 export function TheaterScreen({
   node,
-  trackIndex,
-  boardEvent,
   diceFace,
   selectedElements,
-  photoName,
   activeChoice,
-  gameMode,
-  aiConfig,
-  journeyLog,
   onBack,
   onChoice,
   onMission,
 }: {
   node: RouteNode
-  trackIndex: number
-  boardEvent: BoardEvent | null
   diceFace: DiceFace
   selectedElements: string[]
-  photoName?: string
   activeChoice: DialogueChoice | null
-  gameMode: GameMode
-  aiConfig?: AiEndpointConfig
-  journeyLog: JourneyEvent[]
   onBack: () => void
   onChoice: (choice: DialogueChoice) => void
   onMission: () => void
 }) {
-  const scene = getTurnSceneMeta(node.id, trackIndex, boardEvent)
-  const selectedElementKey = selectedElements.join('|')
-  const promptElements = useMemo(
-    () => (selectedElementKey ? selectedElementKey.split('|') : []),
-    [selectedElementKey],
-  )
-  const elementText = promptElements.length > 0 ? promptElements.join('、') : node.photoTags.slice(0, 3).join('、')
+  const cityPack = useCityPack()
+  const [voiceEnabled, setVoiceEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true
+    return window.localStorage.getItem(voicePreferenceKey) !== 'off'
+  })
+  const [voicePlaying, setVoicePlaying] = useState(false)
+  const scene = cityPack.scenes.getNodeSceneMeta(node.id)
+  const elementText = selectedElements.length > 0 ? selectedElements.join('、') : node.photoTags.slice(0, 3).join('、')
   const DiceIcon = diceFace.icon
-  const roleImage = nodeRoleAssets[node.id] ? assetUrl(nodeRoleAssets[node.id]) : ''
-  const [aiState, setAiState] = useState<{
-    status: 'idle' | 'loading' | 'success' | 'error'
-    text: string
-    error?: string
-  }>({ status: 'idle', text: '' })
-  const localTypedSource = useMemo(
+  const roleImage = cityPack.roleImages[node.id] ?? ''
+  const activeChoiceIndex = activeChoice
+    ? node.choices.findIndex((choice) => choice.prompt === activeChoice.prompt)
+    : -1
+  const activeVoiceSrc = getVoiceLineSrc(
+    cityPack.id,
+    node.id,
+    activeChoiceIndex >= 0 ? `choice-${activeChoiceIndex + 1}` : 'stage',
+  )
+  const typedSource = useMemo(
     () => {
-      const eventLine = boardEvent
-        ? `\n\n你这回不是按固定路线走来，而是落在「${boardEvent.title}」。${boardEvent.storyHook}`
-        : ''
-      const opening = `${node.stageLine}${eventLine}\n\n${scene.roleBio}\n\n我从现场看见了 ${elementText}。这次骰面是「${diceFace.name}」，${diceFace.meaning}`
+      const opening = `${node.stageLine}\n\n${scene.roleBio}\n\n我从现场看见了 ${elementText}。这次骰面是「${diceFace.name}」，${diceFace.meaning}`
 
       if (!activeChoice) return opening
 
       return `你问：「${activeChoice.prompt}」\n\n${node.roleName}答：${activeChoice.reply}\n\n这句回应会写入这一格的现场记录，并影响后续现实任务的语气。`
     },
-    [activeChoice, boardEvent, diceFace.meaning, diceFace.name, elementText, node.roleName, node.stageLine, scene.roleBio],
+    [activeChoice, diceFace.meaning, diceFace.name, elementText, node.roleName, node.stageLine, scene.roleBio],
   )
-  const typedSource = gameMode === 'ai' && aiState.status === 'success' ? aiState.text : localTypedSource
 
   useEffect(() => {
-    if (gameMode !== 'ai' || !aiConfig) {
-      return undefined
+    preloadVoiceLines([
+      getVoiceLineSrc(cityPack.id, node.id, 'stage'),
+      ...node.choices.map((_, index) => getVoiceLineSrc(cityPack.id, node.id, `choice-${index + 1}`)),
+    ])
+  }, [cityPack.id, node.choices, node.id])
+
+  useEffect(() => {
+    window.localStorage.setItem(voicePreferenceKey, voiceEnabled ? 'on' : 'off')
+  }, [voiceEnabled])
+
+  useEffect(() => {
+    let cancelled = false
+
+    stopVoiceLine()
+
+    if (voiceEnabled) {
+      void playVoiceLine(
+        activeVoiceSrc,
+        () => {
+          if (!cancelled) setVoicePlaying(false)
+        },
+        () => {
+          if (!cancelled) setVoicePlaying(true)
+        },
+      )
     }
-
-    const controller = new AbortController()
-    const loadingTimer = window.setTimeout(() => {
-      setAiState({ status: 'loading', text: '' })
-    }, 0)
-
-    requestOpenAiText({
-      config: aiConfig,
-      signal: controller.signal,
-      maxTokens: activeChoice ? 360 : 520,
-      messages: createTheaterMessages({
-        node,
-        diceFace,
-        selectedElements: promptElements,
-        photoName,
-        roleBio: scene.roleBio,
-        activeChoice,
-        boardEvent,
-        journeyLog,
-      }),
-    })
-      .then((text) => {
-        setAiState({ status: 'success', text })
-      })
-      .catch((error: unknown) => {
-        if (controller.signal.aborted) return
-        const message = error instanceof Error ? error.message : 'AI 暂时没有返回'
-        setAiState({ status: 'error', text: '', error: message })
-      })
 
     return () => {
-      window.clearTimeout(loadingTimer)
-      controller.abort()
+      cancelled = true
+      stopVoiceLine()
     }
-  }, [
-    activeChoice,
-    aiConfig,
-    boardEvent,
-    diceFace,
-    gameMode,
-    journeyLog,
-    node,
-    photoName,
-    promptElements,
-    scene.roleBio,
-    selectedElementKey,
-  ])
+  }, [activeVoiceSrc, voiceEnabled])
+
+  const toggleVoice = () => {
+    setVoiceEnabled((enabled) => {
+      const nextEnabled = !enabled
+      if (!nextEnabled) {
+        stopVoiceLine()
+        setVoicePlaying(false)
+      }
+      return nextEnabled
+    })
+  }
 
   return (
     <section className="screen scene-theater-screen" style={{ '--scene-accent': node.accent } as CSSProperties}>
@@ -167,17 +146,19 @@ export function TheaterScreen({
         </figure>
 
         <article className="scene-dialogue-card" aria-label={`${node.roleName}台词`}>
-          <p className="eyebrow">{node.roleTone}</p>
-          <h2>{node.roleName}</h2>
-          <small>{node.roleTitle}</small>
-          {gameMode === 'ai' && (
-            <p className={`ai-live-status ${aiState.status}`}>
-              {aiState.status === 'loading' && 'AI 正在根据你的现场行为重写对白...'}
-              {aiState.status === 'success' && `AI Mode · ${aiConfig?.model}`}
-              {aiState.status === 'error' && `AI 暂未接通，已使用本地兜底：${aiState.error}`}
-              {aiState.status === 'idle' && 'AI Mode 已准备'}
-            </p>
-          )}
+          <div className="scene-dialogue-head">
+            <div>
+              <p className="eyebrow">{node.roleTone}</p>
+              <h2>{node.roleName}</h2>
+              <small>{node.roleTitle}</small>
+            </div>
+            <VoiceButton
+              enabled={voiceEnabled}
+              playing={voicePlaying}
+              label={`重新打开${node.roleName}自动配音`}
+              onToggle={toggleVoice}
+            />
+          </div>
           <TypewriterCopy key={typedSource} text={typedSource} />
         </article>
 

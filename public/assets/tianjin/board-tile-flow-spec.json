@@ -1,0 +1,251 @@
+{
+  "city": "tianjin",
+  "title": "海河来信",
+  "layout": {
+    "columns": 6,
+    "rows": 8,
+    "outerCells": 24
+  },
+  "buttons": [
+    {
+      "slot": 1,
+      "file": "button-01-start-haihe-letter.png",
+      "size": [
+        721,
+        285
+      ],
+      "title": "起局",
+      "subtitle": "来信"
+    },
+    {
+      "slot": 2,
+      "file": "button-02-landmark-jiefang-bridge.png",
+      "size": [
+        721,
+        285
+      ],
+      "title": "海河启程",
+      "subtitle": "邮差"
+    },
+    {
+      "slot": 3,
+      "file": "button-03-photo-bridge-shadow.png",
+      "size": [
+        721,
+        283
+      ],
+      "title": "拍照任务",
+      "subtitle": "桥影"
+    },
+    {
+      "slot": 4,
+      "file": "button-04-landmark-italian-quarter.png",
+      "size": [
+        721,
+        283
+      ],
+      "title": "万国街巷",
+      "subtitle": "建筑"
+    },
+    {
+      "slot": 5,
+      "file": "button-05-dice-concession-memory.png",
+      "size": [
+        721,
+        295
+      ],
+      "title": "时空骰",
+      "subtitle": "开埠"
+    },
+    {
+      "slot": 6,
+      "file": "button-06-sound-street-corner.png",
+      "size": [
+        721,
+        293
+      ],
+      "title": "市声任务",
+      "subtitle": "街角"
+    },
+    {
+      "slot": 7,
+      "file": "button-07-fate-first-turn.png",
+      "size": [
+        717,
+        283
+      ],
+      "title": "命运格",
+      "subtitle": "转折"
+    },
+    {
+      "slot": 8,
+      "file": "button-08-echo-card-unlock.png",
+      "size": [
+        715,
+        283
+      ],
+      "title": "回声卡",
+      "subtitle": "留言"
+    },
+    {
+      "slot": 9,
+      "file": "button-09-landmark-ancient-culture-street.png",
+      "size": [
+        717,
+        285
+      ],
+      "title": "津门香火",
+      "subtitle": "年画"
+    },
+    {
+      "slot": 10,
+      "file": "button-10-hidden-old-ticket.png",
+      "size": [
+        715,
+        285
+      ],
+      "title": "隐藏支线",
+      "subtitle": "老票根"
+    },
+    {
+      "slot": 11,
+      "file": "button-11-cocreate-route-seal.png",
+      "size": [
+        717,
+        285
+      ],
+      "title": "共创格",
+      "subtitle": "路线章"
+    },
+    {
+      "slot": 12,
+      "file": "button-12-fate-route-choice.png",
+      "size": [
+        715,
+        285
+      ],
+      "title": "命运格",
+      "subtitle": "转场"
+    },
+    {
+      "slot": 13,
+      "file": "button-13-travelogue-midpoint.png",
+      "size": [
+        723,
+        289
+      ],
+      "title": "海河游记",
+      "subtitle": "终局"
+    },
+    {
+      "slot": 14,
+      "file": "button-14-echo-wudadao-note.png",
+      "size": [
+        723,
+        291
+      ],
+      "title": "回声格",
+      "subtitle": "记录"
+    },
+    {
+      "slot": 15,
+      "file": "button-15-landmark-wudadao.png",
+      "size": [
+        723,
+        291
+      ],
+      "title": "洋楼慢行",
+      "subtitle": "管家"
+    },
+    {
+      "slot": 16,
+      "file": "button-16-photo-window-gate.png",
+      "size": [
+        723,
+        291
+      ],
+      "title": "拍照任务",
+      "subtitle": "门窗"
+    },
+    {
+      "slot": 17,
+      "file": "button-17-dice-letter-mood.png",
+      "size": [
+        723,
+        299
+      ],
+      "title": "时空骰",
+      "subtitle": "来信"
+    },
+    {
+      "slot": 18,
+      "file": "button-18-landmark-tianjin-eye-night.png",
+      "size": [
+        723,
+        299
+      ],
+      "title": "海河回信",
+      "subtitle": "夜航"
+    },
+    {
+      "slot": 19,
+      "file": "button-19-riverbank-letter.png",
+      "size": [
+        721,
+        289
+      ],
+      "title": "河岸短笺",
+      "subtitle": "回应"
+    },
+    {
+      "slot": 20,
+      "file": "button-20-sound-river-wind.png",
+      "size": [
+        723,
+        289
+      ],
+      "title": "市声任务",
+      "subtitle": "河风"
+    },
+    {
+      "slot": 21,
+      "file": "button-21-cocreate-card-route-sticker.png",
+      "size": [
+        721,
+        291
+      ],
+      "title": "共创格",
+      "subtitle": "卡牌"
+    },
+    {
+      "slot": 22,
+      "file": "button-22-dice-finale-tone.png",
+      "size": [
+        723,
+        291
+      ],
+      "title": "时空骰",
+      "subtitle": "选择"
+    },
+    {
+      "slot": 23,
+      "file": "button-23-fate-missed-rewind.png",
+      "size": [
+        721,
+        297
+      ],
+      "title": "命运格",
+      "subtitle": "错过"
+    },
+    {
+      "slot": 24,
+      "file": "button-24-echo-return-line.png",
+      "size": [
+        723,
+        297
+      ],
+      "title": "回声格",
+      "subtitle": "返场"
+    }
+  ]
+}

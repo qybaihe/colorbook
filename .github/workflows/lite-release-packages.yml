@@ -59,10 +59,10 @@ jobs:
           VERSION="${GITHUB_REF_NAME#lite-v}"
           mkdir -p release-lite
           if [[ "${{ matrix.os }}" == macos-* ]]; then
-            cp release/*mac-arm64.dmg "release-lite/Colorbook-Beijing-${VERSION}-lite-mac-arm64.dmg"
-            cp release/*mac-x64.dmg "release-lite/Colorbook-Beijing-${VERSION}-lite-mac-x64.dmg"
+            cp release/*mac-arm64.dmg "release-lite/Colorbook-Echo-${VERSION}-lite-mac-arm64.dmg"
+            cp release/*mac-x64.dmg "release-lite/Colorbook-Echo-${VERSION}-lite-mac-x64.dmg"
           else
-            cp release/*windows-x64.exe "release-lite/Colorbook-Beijing-${VERSION}-lite-windows-x64.exe"
+            cp release/*windows-x64.exe "release-lite/Colorbook-Echo-${VERSION}-lite-windows-x64.exe"
           fi
 
       - name: Upload lite desktop artifact
@@ -116,7 +116,7 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#lite-v}"
           mkdir -p release-lite
-          cp android/app/build/outputs/apk/debug/app-debug.apk "release-lite/Colorbook-Beijing-${VERSION}-lite-android-debug.apk"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "release-lite/Colorbook-Echo-${VERSION}-lite-android-debug.apk"
 
       - name: Upload lite Android artifact
         uses: actions/upload-artifact@v4
@@ -172,7 +172,7 @@ jobs:
           APP_PATH="$(find ios/DerivedData/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -type d | head -n 1)"
           test -n "$APP_PATH"
           cp -R "$APP_PATH" release-lite/ios/Payload/
-          (cd release-lite/ios && zip -qry "../Colorbook-Beijing-${VERSION}-lite-ios-unsigned.ipa" Payload)
+          (cd release-lite/ios && zip -qry "../Colorbook-Echo-${VERSION}-lite-ios-unsigned.ipa" Payload)
 
       - name: Upload lite iOS artifact
         uses: actions/upload-artifact@v4
@@ -202,14 +202,14 @@ jobs:
           name: 此地有回声 ${{ github.ref_name }} 轻量版
           files: release-artifacts/*
           body: |
-            《此地有回声：北京中轴入局》全平台轻量试玩版。
+            《此地有回声》北京中轴与天津海河双城全平台轻量试玩版。
 
-            这个版本在打包前压缩并降采样了主要图片素材，保留完整游戏流程和本地资产引用，适合更快下载和安装测试。
+            这个版本在打包前压缩并降采样了主要图片素材，保留完整游戏流程、本地卡牌场景素材和角色配音引用，适合更快下载和安装测试。
 
-            - `Colorbook-Beijing-*-lite-mac-arm64.dmg`：Apple Silicon Mac 轻量版。
-            - `Colorbook-Beijing-*-lite-mac-x64.dmg`：Intel Mac 轻量版。
-            - `Colorbook-Beijing-*-lite-windows-x64.exe`：Windows 64 位轻量安装包。
-            - `Colorbook-Beijing-*-lite-android-debug.apk`：Android 调试签名轻量 APK，可直接安装测试。
-            - `Colorbook-Beijing-*-lite-ios-unsigned.ipa`：iOS 未签名轻量 IPA，需要使用自己的 Apple 开发者证书重新签名后安装。
+            - `Colorbook-Echo-*-lite-mac-arm64.dmg`：Apple Silicon Mac 轻量版。
+            - `Colorbook-Echo-*-lite-mac-x64.dmg`：Intel Mac 轻量版。
+            - `Colorbook-Echo-*-lite-windows-x64.exe`：Windows 64 位轻量安装包。
+            - `Colorbook-Echo-*-lite-android-debug.apk`：Android 调试签名轻量 APK，可直接安装测试。
+            - `Colorbook-Echo-*-lite-ios-unsigned.ipa`：iOS 未签名 IPA，需要使用自己的 Apple 开发者证书重新签名后安装。
 
-            默认 `Local Only` 模式不需要后端服务、不需要登录，也不调用外部 AI。入口页可选择 `AI Mode`，填写 OpenAI 兼容 URL、API Key 和模型名后，剧场对白与终局游记会根据玩家行为实时生成。
+            默认不需要后端服务、不需要登录，主要剧情、卡牌、音效与角色配音都随安装包离线运行。

@@ -1,13 +1,10 @@
 import type { CSSProperties } from 'react'
 import { ArrowRight, Camera, ChevronLeft, Dice6, ImageUp } from 'lucide-react'
 import type { RouteNode } from '../data/beijingGame'
-import type { BoardEvent } from '../data/randomEvents'
-import { getTurnSceneMeta } from '../data/tileScenes'
+import { useCityPack } from '../data/cityPackRuntime'
 
 export function PhotoTriggerScreen({
   node,
-  trackIndex,
-  boardEvent,
   selectedElements,
   photoName,
   onBack,
@@ -16,8 +13,6 @@ export function PhotoTriggerScreen({
   onRoll,
 }: {
   node: RouteNode
-  trackIndex: number
-  boardEvent: BoardEvent | null
   selectedElements: string[]
   photoName?: string
   onBack: () => void
@@ -25,7 +20,8 @@ export function PhotoTriggerScreen({
   onSelectElement: (element: string) => void
   onRoll: () => void
 }) {
-  const scene = getTurnSceneMeta(node.id, trackIndex, boardEvent)
+  const cityPack = useCityPack()
+  const scene = cityPack.scenes.getNodeSceneMeta(node.id)
 
   return (
     <section className="screen scene-photo-screen" style={{ '--scene-accent': node.accent } as CSSProperties}>
@@ -46,7 +42,6 @@ export function PhotoTriggerScreen({
           <p className="eyebrow">{scene.sceneTone} / {node.roleName}</p>
           <h2>{scene.uploadTitle}</h2>
           <p>{scene.storyHint}</p>
-          {boardEvent && <small>{boardEvent.storyHook}</small>}
         </section>
 
         <section className="scene-upload-card" aria-label="上传现场照片">

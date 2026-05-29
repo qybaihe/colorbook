@@ -1,12 +1,6 @@
 import type { CSSProperties } from 'react'
 import { LockKeyhole } from 'lucide-react'
-import {
-  cardCategoryMeta,
-  cultureCards,
-  getCardsForHand,
-  getGameCard,
-  getGameCards,
-} from '../data/gameCards'
+import { useCityPack } from '../data/cityPackRuntime'
 import { playUiSound } from '../utils/sound'
 import { GameCardArt } from './GameCardArt'
 
@@ -19,11 +13,12 @@ export function CardHand({
   compact?: boolean
   onSelect?: (cardId: string) => void
 }) {
+  const cityPack = useCityPack()
   const cards = compact
     ? collectedCardIds.length
-      ? getGameCards(collectedCardIds)
-      : cultureCards
-    : getCardsForHand(collectedCardIds)
+      ? cityPack.cards.getGameCards(collectedCardIds)
+      : cityPack.cards.cultureCards
+    : cityPack.cards.getCardsForHand(collectedCardIds)
 
   return (
     <div className={compact ? 'card-hand compact' : 'card-hand'}>
@@ -45,7 +40,7 @@ export function CardHand({
             </GameCardArt>
             <span>
               <strong>{card.name}</strong>
-              <small>{earned ? cardCategoryMeta[card.category].shortLabel : '未解锁'}</small>
+              <small>{earned ? cityPack.cards.cardCategoryMeta[card.category].shortLabel : '未解锁'}</small>
             </span>
           </button>
         )
@@ -55,16 +50,18 @@ export function CardHand({
 }
 
 export function RewardCards({ cardIds }: { cardIds: string[] }) {
+  const cityPack = useCityPack()
+
   return (
     <div className="reward-cards">
       {cardIds.map((cardId) => {
-        const card = getGameCard(cardId)
+        const card = cityPack.cards.getGameCard(cardId)
         if (!card) return null
         return (
           <article className="reward-card" key={card.id} style={{ '--card-color': card.color } as CSSProperties}>
             <GameCardArt card={card} />
             <strong>{card.name}</strong>
-            <small>{cardCategoryMeta[card.category].shortLabel} / {card.theme}</small>
+            <small>{cityPack.cards.cardCategoryMeta[card.category].shortLabel} / {card.theme}</small>
           </article>
         )
       })}

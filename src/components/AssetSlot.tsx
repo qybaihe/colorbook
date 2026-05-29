@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { assetUrl, type AssetKey } from '../data/beijingAssets'
+import type { AssetKey } from '../data/beijingAssets'
+import { useCityPack } from '../data/cityPackRuntime'
 
 export function AssetSlot({
   assetKey,
@@ -12,13 +13,15 @@ export function AssetSlot({
   className?: string
   children?: ReactNode
 }) {
+  const cityPack = useCityPack()
+
   return (
     <div
       className={`asset-slot ${className}`}
       style={
         {
           '--accent': accent,
-          '--asset-url': `url("${assetUrl(assetKey)}")`,
+          '--asset-url': `url("${cityPack.assetUrl(assetKey)}")`,
         } as CSSProperties
       }
     >
@@ -26,4 +29,3 @@ export function AssetSlot({
     </div>
   )
 }
-

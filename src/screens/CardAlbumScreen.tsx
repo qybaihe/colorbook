@@ -3,14 +3,7 @@ import { LockKeyhole, Sparkles } from 'lucide-react'
 import { AssetSlot } from '../components/AssetSlot'
 import { CardHand } from '../components/CardHand'
 import { GameCardArt } from '../components/GameCardArt'
-import {
-  cardCategoryMeta,
-  defaultSelectedCardId,
-  gameCards,
-  getGameCard,
-  getGameCardsByCategory,
-  playableCardCategories,
-} from '../data/gameCards'
+import { useCityPack } from '../data/cityPackRuntime'
 import { playUiSound } from '../utils/sound'
 
 export function CardAlbumScreen({
@@ -22,12 +15,16 @@ export function CardAlbumScreen({
   selectedCardId: string
   onSelectCard: (cardId: string) => void
 }) {
-  const selectedCard = getGameCard(selectedCardId) ?? getGameCard(defaultSelectedCardId) ?? gameCards[0]
+  const cityPack = useCityPack()
+  const selectedCard =
+    cityPack.cards.getGameCard(selectedCardId) ??
+    cityPack.cards.getGameCard(cityPack.cards.defaultSelectedCardId) ??
+    cityPack.cards.gameCards[0]
   const earned = collectedCardIds.includes(selectedCard.id)
-  const selectedMeta = cardCategoryMeta[selectedCard.category]
+  const selectedMeta = cityPack.cards.cardCategoryMeta[selectedCard.category]
 
   // Calculate stats
-  const totalCards = gameCards.length
+  const totalCards = cityPack.cards.gameCards.length
   const earnedCount = collectedCardIds.length
   const progressPercent = Math.round((earnedCount / totalCards) * 100)
 
@@ -39,7 +36,7 @@ export function CardAlbumScreen({
         <header className="album-header">
           <div className="album-header-main">
             <p className="eyebrow">档案 · 此地有回声</p>
-            <h1>中轴入局<span>收藏手册</span></h1>
+            <h1>{cityPack.chapter.title}<span>收藏手册</span></h1>
           </div>
           <div className="album-stats">
             <div className="stat-item">
@@ -54,9 +51,9 @@ export function CardAlbumScreen({
         </header>
 
         <div className="album-sections archive-pages">
-          {playableCardCategories.map((category) => {
-            const meta = cardCategoryMeta[category]
-            const categoryCards = getGameCardsByCategory(category)
+          {cityPack.cards.playableCardCategories.map((category) => {
+            const meta = cityPack.cards.cardCategoryMeta[category]
+            const categoryCards = cityPack.cards.getGameCardsByCategory(category)
             const categoryEarnedCount = categoryCards.filter(c => collectedCardIds.includes(c.id)).length
 
             return (

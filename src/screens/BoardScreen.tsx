@@ -2,16 +2,13 @@ import { BoardView } from '../components/BoardView'
 import { CardHand } from '../components/CardHand'
 import { CurrentTurnPanel } from '../components/CurrentTurnPanel'
 import type { RouteNode } from '../data/beijingGame'
-import type { BoardEvent, MoveResult } from '../data/randomEvents'
+import { useCityPack } from '../data/cityPackRuntime'
 
 export function BoardScreen({
   currentNode,
-  currentTrackIndex,
-  activeBoardEvent,
-  lastMove,
   completedNodeIds,
   collectedCardIds,
-  walkFromTrackIndex,
+  walkFromNodeId,
   playerStamina,
   maxPlayerStamina,
   onOpenNode,
@@ -20,12 +17,9 @@ export function BoardScreen({
   onWalkComplete,
 }: {
   currentNode: RouteNode
-  currentTrackIndex: number
-  activeBoardEvent: BoardEvent | null
-  lastMove: MoveResult | null
   completedNodeIds: string[]
   collectedCardIds: string[]
-  walkFromTrackIndex: number | null
+  walkFromNodeId: string | null
   playerStamina: number
   maxPlayerStamina: number
   onOpenNode: () => void
@@ -33,28 +27,27 @@ export function BoardScreen({
   onOpenCards: (cardId: string) => void
   onWalkComplete: () => void
 }) {
+  const cityPack = useCityPack()
+
   return (
     <section className="screen board-screen">
       <div className="board-title">
         <div>
           <p className="eyebrow">城市棋盘</p>
-          <h1>北京《中轴入局》</h1>
+          <h1>{cityPack.chapter.city}《{cityPack.chapter.title}》</h1>
         </div>
       </div>
 
       <BoardView
-        currentTrackIndex={currentTrackIndex}
+        currentNode={currentNode}
         completedNodeIds={completedNodeIds}
-        walkFromTrackIndex={walkFromTrackIndex}
+        walkFromNodeId={walkFromNodeId}
         onOpenNode={onOpenNode}
         onWalkComplete={onWalkComplete}
       />
 
       <CurrentTurnPanel
         currentNode={currentNode}
-        currentTrackIndex={currentTrackIndex}
-        activeBoardEvent={activeBoardEvent}
-        lastMove={lastMove}
         completedNodeIds={completedNodeIds}
         playerStamina={playerStamina}
         maxPlayerStamina={maxPlayerStamina}

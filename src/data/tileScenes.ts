@@ -1,5 +1,3 @@
-import type { BoardEvent } from './randomEvents'
-
 export type TileSceneMeta = {
   sceneImage: string
   storyHint: string
@@ -9,33 +7,6 @@ export type TileSceneMeta = {
   roleBio: string
   sceneTone: string
 }
-
-const tileSceneImages = [
-  '/assets/beijing/tile-scenes-24/tile-01-qianmen-entry-identity.png',
-  '/assets/beijing/tile-scenes-24/tile-02-gate-market-shopkeeper-theater.png',
-  '/assets/beijing/tile-scenes-24/tile-03-photo-qianmen-evidence.png',
-  '/assets/beijing/tile-scenes-24/tile-04-axis-symmetry-photo.png',
-  '/assets/beijing/tile-scenes-24/tile-05-dice-first-event-draw.png',
-  '/assets/beijing/tile-scenes-24/tile-06-sound-street-collect.png',
-  '/assets/beijing/tile-scenes-24/tile-07-fate-route-reality-check.png',
-  '/assets/beijing/tile-scenes-24/tile-08-echo-card-message.png',
-  '/assets/beijing/tile-scenes-24/tile-09-corner-tower-reflection-painter.png',
-  '/assets/beijing/tile-scenes-24/tile-10-hidden-missed-letter.png',
-  '/assets/beijing/tile-scenes-24/tile-11-cocreate-city-route-seal.png',
-  '/assets/beijing/tile-scenes-24/tile-12-fate-transfer-choice.png',
-  '/assets/beijing/tile-scenes-24/tile-13-travelogue-draft.png',
-  '/assets/beijing/tile-scenes-24/tile-14-echo-city-layer-note.png',
-  '/assets/beijing/tile-scenes-24/tile-15-jingshan-three-layer-view.png',
-  '/assets/beijing/tile-scenes-24/tile-16-photo-oldcity-axis-transition.png',
-  '/assets/beijing/tile-scenes-24/tile-17-dice-letter-mood-event.png',
-  '/assets/beijing/tile-scenes-24/tile-18-old-city-echo-landmark-theater.png',
-  '/assets/beijing/tile-scenes-24/tile-19-old-city-echo-finale-note.png',
-  '/assets/beijing/tile-scenes-24/tile-20-sound-bell-footsteps.png',
-  '/assets/beijing/tile-scenes-24/tile-21-cocreate-card-route-sticker.png',
-  '/assets/beijing/tile-scenes-24/tile-22-dice-finale-tone.png',
-  '/assets/beijing/tile-scenes-24/tile-23-fate-missed-rewind-safe-route.png',
-  '/assets/beijing/tile-scenes-24/tile-24-echo-return-to-finale-array.png',
-] as const
 
 const fallbackScene: TileSceneMeta = {
   sceneImage: '/assets/beijing/tile-scenes-24/tile-02-gate-market-shopkeeper-theater.png',
@@ -97,24 +68,4 @@ export const nodeSceneMeta: Record<string, TileSceneMeta> = {
 
 export function getNodeSceneMeta(nodeId: string) {
   return nodeSceneMeta[nodeId] ?? fallbackScene
-}
-
-export function getTurnSceneMeta(nodeId: string, trackIndex?: number, boardEvent?: BoardEvent | null) {
-  const base = getNodeSceneMeta(nodeId)
-  const sceneImage = typeof trackIndex === 'number' ? tileSceneImages[trackIndex] ?? base.sceneImage : base.sceneImage
-
-  if (!boardEvent) {
-    return { ...base, sceneImage }
-  }
-
-  return {
-    ...base,
-    sceneImage,
-    storyHint: `${boardEvent.description} ${boardEvent.taskDirective}`,
-    uploadTitle: boardEvent.taskDirective,
-    uploadHelp: `${base.uploadHelp} 这一局落到「${boardEvent.title}」，你的选择会写进后续对白和游记。`,
-    fallbackLabel: boardEvent.tone === 'fate' ? '改用安全替代路线' : base.fallbackLabel,
-    roleBio: `${base.roleBio} ${boardEvent.storyHook}`,
-    sceneTone: `${boardEvent.title} / ${boardEvent.subtitle}`,
-  }
 }

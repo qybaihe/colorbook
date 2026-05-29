@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { assetUrl } from '../data/beijingAssets'
-import { getGameCardImageUrl, type GameCard } from '../data/gameCards'
+import { useCityPack } from '../data/cityPackRuntime'
+import type { GameCard } from '../data/gameCards'
 
 export function GameCardArt({
   card,
@@ -13,13 +13,15 @@ export function GameCardArt({
   className?: string
   children?: ReactNode
 }) {
+  const cityPack = useCityPack()
+
   return (
     <div
       className={`asset-slot game-card-art ${className}`}
       style={
         {
           '--accent': card.color,
-          '--asset-url': `url("${locked ? assetUrl('cardLocked') : getGameCardImageUrl(card)}")`,
+          '--asset-url': `url("${locked ? cityPack.assetUrl('cardLocked') : cityPack.cards.getGameCardImageUrl(card)}")`,
         } as CSSProperties
       }
     >

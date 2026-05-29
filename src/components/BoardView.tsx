@@ -1,31 +1,66 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
-import {
-  boardLayout,
-  getTrackStepDirection,
-  getTrackWalkIndexes,
-  tileButtonImages,
-  trackCells,
-  type WalkDirection,
-} from '../data/boardTrack'
-import { routeNodes } from '../data/beijingGame'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { type TrackCell, type WalkDirection } from '../data/boardTrack'
+import { type RouteNode } from '../data/beijingGame'
+import { useCityPack } from '../data/cityPackRuntime'
 import { playUiSound } from '../utils/sound'
 import { AssetSlot } from './AssetSlot'
 
+function getTrackCellIndexByNodeId(trackCells: TrackCell[], nodeId: string) {
+  return trackCells.findIndex((cell) => cell.kind === 'node' && cell.nodeId === nodeId)
+}
+
+function getTrackWalkIndexes(trackCells: TrackCell[], startIndex: number, targetIndex: number) {
+  const total = trackCells.length
+  if (startIndex === targetIndex) return [targetIndex]
+
+  const forwardSteps = (targetIndex - startIndex + total) % total
+  const backwardSteps = (startIndex - targetIndex + total) % total
+  const step = forwardSteps <= backwardSteps ? 1 : -1
+  const stepCount = Math.min(forwardSteps, backwardSteps)
+
+  return Array.from({ length: stepCount + 1 }, (_, index) => {
+    return (startIndex + step * index + total) % total
+  })
+}
+
+function getTrackStepDirection(trackCells: TrackCell[], fromIndex: number, toIndex: number): WalkDirection {
+  const fromCell = trackCells[fromIndex]
+  const toCell = trackCells[toIndex]
+  const fromColumn = Number(fromCell.column)
+  const toColumn = Number(toCell.column)
+  const fromRow = Number(fromCell.row)
+  const toRow = Number(toCell.row)
+
+  if (toColumn > fromColumn) return 'right'
+  if (toColumn < fromColumn) return 'left'
+  if (toRow > fromRow) return 'down'
+  return 'up'
+}
+
 export function BoardView({
-  currentTrackIndex,
+  currentNode,
   completedNodeIds,
-  walkFromTrackIndex,
+  walkFromNodeId,
   onOpenNode,
   onWalkComplete,
 }: {
-  currentTrackIndex: number
+  currentNode: RouteNode
   completedNodeIds: string[]
-  walkFromTrackIndex: number | null
+  walkFromNodeId: string | null
   onOpenNode: () => void
   onWalkComplete: () => void
 }) {
-  const targetIndex = currentTrackIndex
-  const startIndex = walkFromTrackIndex ?? targetIndex
+  const cityPack = useCityPack()
+  const { layout: boardLayout, tileButtonImages, trackCells } = cityPack.board
+  const targetIndex = useMemo(() => {
+    const index = getTrackCellIndexByNodeId(trackCells, currentNode.id)
+    return index >= 0 ? index : 0
+  }, [currentNode.id, trackCells])
+  const startIndex = useMemo(() => {
+    if (!walkFromNodeId) return targetIndex
+    const index = getTrackCellIndexByNodeId(trackCells, walkFromNodeId)
+    return index >= 0 ? index : targetIndex
+  }, [targetIndex, trackCells, walkFromNodeId])
   const [walkerIndex, setWalkerIndex] = useState(startIndex)
   const [walkDirection, setWalkDirection] = useState<WalkDirection>('down')
   const [isWalking, setIsWalking] = useState(false)
@@ -55,10 +90,10 @@ export function BoardView({
       x: paddingLeft + column * (cellWidth + columnGap) + cellWidth / 2,
       y: paddingTop + row * (cellHeight + rowGap) + cellHeight / 2,
     }
-  }, [])
+  }, [boardLayout.columns, boardLayout.rows])
 
   useEffect(() => {
-    const walkIndexes = getTrackWalkIndexes(startIndex, targetIndex)
+    const walkIndexes = getTrackWalkIndexes(trackCells, startIndex, targetIndex)
     const timers: number[] = []
 
     const startTimer = window.setTimeout(() => {
@@ -66,7 +101,7 @@ export function BoardView({
 
       if (walkIndexes.length <= 1) {
         setIsWalking(false)
-        if (walkFromTrackIndex !== null) onWalkComplete()
+        if (walkFromNodeId) onWalkComplete()
         return
       }
 
@@ -74,7 +109,7 @@ export function BoardView({
       walkIndexes.slice(1).forEach((nextIndex, stepIndex) => {
         const previousIndex = walkIndexes[stepIndex]
         const timer = window.setTimeout(() => {
-          setWalkDirection(getTrackStepDirection(previousIndex, nextIndex))
+          setWalkDirection(getTrackStepDirection(trackCells, previousIndex, nextIndex))
           setWalkerIndex(nextIndex)
           playUiSound('step')
 
@@ -95,7 +130,7 @@ export function BoardView({
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer))
     }
-  }, [onWalkComplete, startIndex, targetIndex, walkFromTrackIndex])
+  }, [onWalkComplete, startIndex, targetIndex, trackCells, walkFromNodeId])
 
   useEffect(() => {
     let frame = 0
@@ -114,9 +149,9 @@ export function BoardView({
   }, [measureCellCenter, walkerCell])
 
   return (
-    <div className="board-view" aria-label="北京中轴入局棋盘" ref={boardRef}>
+    <div className="board-view" aria-label={`${cityPack.chapter.city}${cityPack.chapter.title}棋盘`} ref={boardRef}>
       <div className="board-map-panel">
-        <AssetSlot assetKey="axisCenterMap" accent="#96342e" className="board-map-art" />
+        <AssetSlot assetKey="axisCenterMap" accent={cityPack.accent} className="board-map-art" />
       </div>
 
       {trackCells.map((cell, index) => {
@@ -124,9 +159,9 @@ export function BoardView({
         const occupied = index === walkerIndex
 
         if (cell.kind === 'node') {
-          const node = routeNodes.find((item) => item.id === cell.nodeId)
+          const node = cityPack.routeNodes.find((item) => item.id === cell.nodeId)
           if (!node) return null
-          const active = index === currentTrackIndex
+          const active = node.id === currentNode.id
           const completed = completedNodeIds.includes(node.id)
           return (
             <button
@@ -135,9 +170,9 @@ export function BoardView({
               }`}
               key={node.id}
               type="button"
-            aria-label={`${node.title}，${node.subtitle}`}
-            aria-disabled={!active}
-            onClick={active ? onOpenNode : undefined}
+              aria-label={`${node.title}，${node.subtitle}`}
+              aria-disabled={!active}
+              onClick={active ? onOpenNode : undefined}
               style={{ gridColumn: cell.column, gridRow: cell.row, '--accent': node.accent } as CSSProperties}
             >
               <img className="board-cell-image" src={tileImage} alt="" draggable={false} />
@@ -147,14 +182,11 @@ export function BoardView({
 
         return (
           <button
-            className={`board-cell image-cell event-cell ${cell.tone} ${
-              index === currentTrackIndex ? 'active' : ''
-            } ${occupied ? 'occupied' : ''}`}
+            className={`board-cell image-cell event-cell ${cell.tone} ${occupied ? 'occupied' : ''}`}
             key={`${cell.label}-${index}`}
             type="button"
             aria-label={`${cell.label}，${cell.helper}`}
-            aria-disabled={index === currentTrackIndex ? undefined : 'true'}
-            onClick={index === currentTrackIndex ? onOpenNode : undefined}
+            aria-disabled="true"
             style={{ gridColumn: cell.column, gridRow: cell.row } as CSSProperties}
           >
             <img className="board-cell-image" src={tileImage} alt="" draggable={false} />
