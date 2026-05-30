@@ -12,9 +12,11 @@ import { MissionScreen } from './screens/MissionScreen'
 import { PhotoTriggerScreen } from './screens/PhotoTriggerScreen'
 import { TheaterScreen } from './screens/TheaterScreen'
 import type { ElementMap, PhotoMap, Screen } from './types'
+import { createPlaythroughSeed, setPlaythroughSeed } from './utils/playthroughSeed'
 import { playUiSound, playUiSoundSequence, preloadUiSounds } from './utils/sound'
 
 const maxPlayerStamina = 5
+const emptyElements: string[] = []
 
 function App() {
   const [activeCityId, setActiveCityId] = useState<CityId>('beijing')
@@ -31,6 +33,7 @@ function App() {
   const [memoryLine, setMemoryLine] = useState(cityPack.defaultMemoryLine)
   const [walkFromNodeId, setWalkFromNodeId] = useState<string | null>(null)
   const [playerStamina, setPlayerStamina] = useState(maxPlayerStamina)
+  const [playthroughSeed, setPlaythroughSeedState] = useState(() => createPlaythroughSeed('beijing'))
 
   const currentNode = cityPack.routeNodes[currentNodeIndex]
   const activeDice = cityPack.diceFaces.find((face) => face.id === activeDiceId) ?? cityPack.diceFaces[1]
@@ -59,7 +62,9 @@ function App() {
 
   const prepareNewGame = (nextCityId: CityId) => {
     const nextCityPack = cityPacks[nextCityId]
+    const nextSeed = setPlaythroughSeed(nextCityId)
     setActiveCityId(nextCityId)
+    setPlaythroughSeedState(nextSeed)
     setWalkFromNodeId(null)
     setCurrentNodeIndex(0)
     setCompletedNodeIds([])
@@ -155,6 +160,7 @@ function App() {
           walkFromNodeId={walkFromNodeId}
           playerStamina={playerStamina}
           maxPlayerStamina={maxPlayerStamina}
+          playthroughSeed={playthroughSeed}
           onOpenNode={() => navigate('photo')}
           onFinale={() => navigate('finale')}
           onOpenCards={openCardAlbum}
@@ -164,7 +170,7 @@ function App() {
       {screen === 'photo' && (
         <PhotoTriggerScreen
           node={currentNode}
-          selectedElements={selectedElements[currentNode.id] ?? []}
+          selectedElements={selectedElements[currentNode.id] ?? emptyElements}
           photoName={photoNames[currentNode.id]}
           onBack={() => navigate('board')}
           onPhoto={(fileName) => {
@@ -179,8 +185,10 @@ function App() {
         <TheaterScreen
           node={currentNode}
           diceFace={activeDice}
-          selectedElements={selectedElements[currentNode.id] ?? []}
+          selectedElements={selectedElements[currentNode.id] ?? emptyElements}
           activeChoice={activeChoice}
+          memoryLine={memoryLine}
+          playthroughSeed={playthroughSeed}
           onBack={() => navigate('photo')}
           onChoice={(choice) => {
             playUiSound('cardFlip')
@@ -193,6 +201,7 @@ function App() {
         <MissionScreen
           node={currentNode}
           memoryLine={memoryLine}
+          playthroughSeed={playthroughSeed}
           onBack={() => navigate('theater')}
           onMemoryChange={setMemoryLine}
           onComplete={completeMission}

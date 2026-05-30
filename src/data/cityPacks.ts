@@ -14,12 +14,17 @@ import * as tianjinBoard from './tianjinBoardTrack'
 import * as tianjinScenes from './tianjinTileScenes'
 import * as tianjinTasks from './tianjinTaskPlans'
 import { tianjinGameCards } from './tianjinCards'
+import * as shanghaiGame from './shanghaiGame'
+import * as shanghaiBoard from './shanghaiBoardTrack'
+import * as shanghaiScenes from './shanghaiTileScenes'
+import * as shanghaiTasks from './shanghaiTaskPlans'
+import { shanghaiGameCards } from './shanghaiCards'
 import type { RouteNode } from './beijingGame'
 import type { TrackCell } from './boardTrack'
 import type { TileSceneMeta } from './tileScenes'
 import type { NodeTaskPlan, TaskButtonKind } from './taskPlans'
 
-export type CityId = 'beijing' | 'tianjin'
+export type CityId = 'beijing' | 'tianjin' | 'shanghai'
 
 export type FinaleNodeCopy = {
   routeLine: string
@@ -208,6 +213,51 @@ const tianjinFinaleNodeCopy: Record<string, FinaleNodeCopy> = {
   },
 }
 
+const shanghaiFinaleNodeCopy: Record<string, FinaleNodeCopy> = {
+  'node-doorplate': {
+    routeLine: '我从第一张门牌进入上海',
+    stamp: '门牌',
+    sensory: '门牌、门洞、招牌和入口灯光先亮了起来',
+    realization: '门牌递信人把第一枚唱针放下。上海不是从远处的天际线开始，而是从一块能被看见的门牌、一处可停留的入口和一盏还在营业的灯开始。',
+    future: '把“城市入口也会发声”留给未来。',
+  },
+  'node-street-sound': {
+    routeLine: '我在街口采了一段人流',
+    stamp: '街声',
+    sensory: '脚步、人声、店门开合和车流边缘叠成底噪',
+    realization: '街声录音师提醒我先听再看。人群不是必须被拍下的画面，也可以成为一段不冒犯任何人的声音边界。',
+    future: '把“热闹也可以被温柔记录”留给未来。',
+  },
+  'node-bund-reflection': {
+    routeLine: '我在外滩看见江面倒影',
+    stamp: '倒影',
+    sensory: '江面、楼影、玻璃和远近关系把空间折成几层',
+    realization: '外滩摄影师把构图压低到水面上。江面让建筑慢下来，玻璃让人流被重新分层，于是一张照片里出现了两个时间。',
+    future: '把“倒影会替城市保存另一面”留给未来。',
+  },
+  'node-window': {
+    routeLine: '我在橱窗里看见街面反光',
+    stamp: '橱窗',
+    sensory: '玻璃、灯光、陈列和路过的影子互相接话',
+    realization: '橱窗布景师说，橱窗不是只给外面看里面，它也把外面的街收进来。透明和反射一起工作，城市就有了前景和幕后。',
+    future: '把“玻璃也会剪辑生活”留给未来。',
+  },
+  'node-shikumen': {
+    routeLine: '我在石库门转角停了一会儿',
+    stamp: '门环',
+    sensory: '门环、砖缝、窗边和路牌把日常留在边角',
+    realization: '石库门住客没有讲长课，只指给我看门、砖、窗和靠过的手。原来生活不是被陈列出来的，它一直藏在进出和等待里。',
+    future: '把“一扇门保存的不只年代”留给未来。',
+  },
+  'node-finale': {
+    routeLine: '我把夜色压成弄堂回声唱片',
+    stamp: '唱片',
+    sensory: '霓虹、河面、窗影和已获得的卡牌回到同一张封面',
+    realization: '夜色放映员把白天的线索收回唱片，城市剪辑师只保留最亮的切片。门牌是开场，街声是底噪，橱窗是前景，江面是转场，霓虹是最后落下的唱针。',
+    future: '把“今天也可以成为一张唱片”留给未来。',
+  },
+}
+
 function createBeijingTravelogue({
   title,
   playerName,
@@ -296,6 +346,56 @@ function createTianjinTravelogue({
     '',
     `署名：${playerName}`,
     `路线：${storyNodes.map((node) => `${tianjinFinaleNodeCopy[node.id].routeLine}（${node.subtitle}）`).join(' -> ')}`,
+    `遇见：${roleNames || '尚未遇见'}`,
+    `卡牌：${cardNames.join('、') || '尚未点亮的卡牌'}`,
+    `回声：${memoryLine}`,
+    '',
+    typedStory,
+  ].join('\n')
+
+  return { typedStory, saveText, truth }
+}
+
+function createShanghaiTravelogue({
+  title,
+  playerName,
+  memoryLine,
+  completedNodes,
+  earnedCards,
+}: TravelogueInput): TravelogueOutput {
+  const storyNodes = completedNodes.length ? completedNodes : shanghaiGame.routeNodes.slice(0, 1)
+  const roleNames = storyNodes.map((node) => node.roleName).join('、')
+  const cardNames = earnedCards.map((card) => card.name)
+  const intro = completedNodes.length
+    ? `亲爱的上海：我是${playerName}。我把这一局弄堂回声收进唱片页。格子退到身后，${storyNodes.map((node) => node.subtitle).join('、')}次第亮起，像一串沿街落下的海派音轨。`
+    : `亲爱的上海：我是${playerName}。这张唱片尚未开始旋转。我刚把棋子放到第一张门牌前，街区已经等着第一声脚步。`
+
+  const nodeParagraphs = storyNodes.map((node) => {
+    const copy = shanghaiFinaleNodeCopy[node.id]
+    const nodeCards = getNodeCards(node, earnedCards)
+    const cardLine = nodeCards.length
+      ? `我把${nodeCards.map((card) => `《${card.name}》`).join('、')}夹进这一轨，像把几枚城市切片压进唱片纹路里。`
+      : '这一轨先留出一点空白，等下一次门牌、玻璃或街声把它补上。'
+
+    return `${copy.routeLine}。我在那里遇见${node.roleName}，${copy.sensory}。${copy.realization}${cardLine}`
+  })
+
+  const cardSummary = cardNames.length
+    ? `卡册里的${cardNames.slice(0, 7).join('、')}${cardNames.length > 7 ? `等 ${cardNames.length} 张牌` : ''}，替我保存了这一局的五条音轨：门牌、橱窗、江边、街声和霓虹。`
+    : '卡册还没有真正亮起来，但门牌、橱窗、江边、街声和霓虹已经在唱片边缘排好了位置。'
+
+  const completeEnough = storyNodes.length >= shanghaiGame.routeNodes.length
+  const truth = completeEnough
+    ? '这一局的真相是：上海不只靠地标被记住，也靠一块门牌、一面玻璃、一阵街声、一层倒影和一盏夜灯，把国际化都市递回具体的人。'
+    : '这一局还在途中，但我已经听见一个答案：上海的现代感不只在高楼里，也在门洞、窗边和路过的脚步里。'
+
+  const ending = `如果要把什么留给未来，我会留下这句话：“${memoryLine}” 也留下我遇见的${roleNames || '陌生人'}、我听见的街声和夜色，以及一个很小的愿望：后来的人再走到这里时，眼前有门牌，耳边有脚步，心里有一张能重新播放上海的唱片。`
+  const typedStory = [intro, ...nodeParagraphs, cardSummary, truth, ending].join('\n\n')
+  const saveText = [
+    `《${title}》`,
+    '',
+    `署名：${playerName}`,
+    `路线：${storyNodes.map((node) => `${shanghaiFinaleNodeCopy[node.id].routeLine}（${node.subtitle}）`).join(' -> ')}`,
     `遇见：${roleNames || '尚未遇见'}`,
     `卡牌：${cardNames.join('、') || '尚未点亮的卡牌'}`,
     `回声：${memoryLine}`,
@@ -419,6 +519,62 @@ export const cityPacks: Record<CityId, CityPack> = {
       createTravelogue: createTianjinTravelogue,
     },
   },
+  shanghai: {
+    id: 'shanghai',
+    assetBase: 'shanghai',
+    accent: '#0f6b70',
+    chapter: shanghaiGame.chapter,
+    bgmSrc: '/audio/shanghai-nongtang-bgm.wav',
+    defaultMemoryLine: '我把今天的门牌、街声和夜色压进一张上海唱片。',
+    routeNodes: shanghaiGame.routeNodes,
+    diceFaces: shanghaiGame.diceFaces,
+    createStoryTitle: shanghaiGame.createStoryTitle,
+    assetPaths,
+    assetUrl: makeAssetUrl('shanghai'),
+    roleImages: {
+      'node-doorplate': '/assets/shanghai/roles/doorplate-messenger.webp',
+      'node-street-sound': '/assets/shanghai/roles/street-sound-recordist.webp',
+      'node-bund-reflection': '/assets/shanghai/roles/bund-photographer.webp',
+      'node-window': '/assets/shanghai/roles/window-set-designer.webp',
+      'node-shikumen': '/assets/shanghai/roles/shikumen-resident.webp',
+      'node-finale': '/assets/shanghai/roles/night-projectionist.webp',
+    },
+    roleCardImages: {
+      'node-doorplate': '/assets/shanghai/role-cards/role-doorplate-messenger.png',
+      'node-street-sound': '/assets/shanghai/role-cards/role-street-sound-recordist.png',
+      'node-bund-reflection': '/assets/shanghai/role-cards/role-bund-photographer.png',
+      'node-window': '/assets/shanghai/role-cards/role-window-set-designer.png',
+      'node-shikumen': '/assets/shanghai/role-cards/role-shikumen-resident.png',
+      'node-finale': '/assets/shanghai/role-cards/role-night-projectionist.png',
+    },
+    board: {
+      trackCells: shanghaiBoard.trackCells,
+      tileButtonImages: shanghaiBoard.tileButtonImages,
+      layout: beijingBoard.boardLayout,
+    },
+    scenes: {
+      nodeSceneMeta: shanghaiScenes.nodeSceneMeta,
+      getNodeSceneMeta: shanghaiScenes.getNodeSceneMeta,
+    },
+    tasks: {
+      taskKindLabels: shanghaiTasks.taskKindLabels,
+      nodeTaskPlans: shanghaiTasks.nodeTaskPlans,
+      getNodeTaskPlan: shanghaiTasks.getNodeTaskPlan,
+    },
+    cards: createCardApi(shanghaiGameCards, 'shanghai'),
+    finale: {
+      playerNameStorageKey: 'shanghaiFinalePlayerName',
+      introSeenStorageKey: 'shanghaiFinaleIntroSeen',
+      ariaLabel: '我的上海弄堂回声',
+      eyebrow: '我的上海弄堂回声',
+      cinematicTitle: '你走过了上海的弄堂回声',
+      emptyCards: '还没有获得卡牌，先回到棋盘完成一站。',
+      writingStatus: '唱片正在显影，门牌、街声与夜色会依次落到纸上。',
+      defaultSaveTitle: '我的上海弄堂回声',
+      nodeCopy: shanghaiFinaleNodeCopy,
+      createTravelogue: createShanghaiTravelogue,
+    },
+  },
 }
 
 export const cityChoices = [
@@ -433,6 +589,12 @@ export const cityChoices = [
     city: '天津',
     title: cityPacks.tianjin.chapter.title,
     background: '/assets/city-select/tianjin-map.png',
+  },
+  {
+    id: 'shanghai',
+    city: '上海',
+    title: cityPacks.shanghai.chapter.title,
+    background: '/assets/city-select/shanghai-map.png',
   },
 ] satisfies Array<{
   id: CityId

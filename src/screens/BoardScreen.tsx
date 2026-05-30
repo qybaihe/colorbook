@@ -11,6 +11,7 @@ export function BoardScreen({
   walkFromNodeId,
   playerStamina,
   maxPlayerStamina,
+  playthroughSeed,
   onOpenNode,
   onFinale,
   onOpenCards,
@@ -22,6 +23,7 @@ export function BoardScreen({
   walkFromNodeId: string | null
   playerStamina: number
   maxPlayerStamina: number
+  playthroughSeed: string
   onOpenNode: () => void
   onFinale: () => void
   onOpenCards: (cardId: string) => void
@@ -51,6 +53,7 @@ export function BoardScreen({
         completedNodeIds={completedNodeIds}
         playerStamina={playerStamina}
         maxPlayerStamina={maxPlayerStamina}
+        playthroughSeed={playthroughSeed}
         onOpenNode={onOpenNode}
         onFinale={onFinale}
       />

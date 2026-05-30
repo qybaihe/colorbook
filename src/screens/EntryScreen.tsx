@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { ArrowRight, Map, MapPinned, Sparkles } from 'lucide-react'
+import { ArrowRight, Map, MapPinned, Sparkles, WandSparkles } from 'lucide-react'
 import { cityChoices, type CityId } from '../data/cityPacks'
 
 const cityIcons = {
   beijing: MapPinned,
   tianjin: Map,
+  shanghai: WandSparkles,
 } as const
 
 export function EntryScreen({

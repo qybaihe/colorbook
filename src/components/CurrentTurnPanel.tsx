@@ -1,12 +1,14 @@
 import { ArrowRight, Footprints, Trophy } from 'lucide-react'
 import { type RouteNode } from '../data/beijingGame'
 import { useCityPack } from '../data/cityPackRuntime'
+import { buildBeijingEncounterContext, buildShuffledTaskButtons } from '../utils/beijingTheater'
 
 export function CurrentTurnPanel({
   currentNode,
   completedNodeIds,
   playerStamina,
   maxPlayerStamina,
+  playthroughSeed,
   onOpenNode,
   onFinale,
 }: {
@@ -14,12 +16,26 @@ export function CurrentTurnPanel({
   completedNodeIds: string[]
   playerStamina: number
   maxPlayerStamina: number
+  playthroughSeed: string
   onOpenNode: () => void
   onFinale: () => void
 }) {
   const cityPack = useCityPack()
   const taskPlan = cityPack.tasks.getNodeTaskPlan(currentNode.id)
-  const roleCardImage = cityPack.roleCardImages[currentNode.id]
+  const roleCardImage = cityPack.roleCardImages[currentNode.id] ?? cityPack.roleCardImages[currentNode.voiceNodeId ?? '']
+  const beijingEncounter =
+    cityPack.id === 'beijing'
+      ? buildBeijingEncounterContext({
+          node: currentNode,
+          seed: playthroughSeed,
+          selectedElements: [],
+        })
+      : null
+  const taskButtons = taskPlan
+    ? cityPack.id === 'beijing'
+      ? buildShuffledTaskButtons(taskPlan.taskButtons, playthroughSeed, currentNode.id)
+      : taskPlan.taskButtons
+    : []
 
   return (
     <aside className="turn-panel">
@@ -72,8 +88,16 @@ export function CurrentTurnPanel({
 
       {taskPlan && (
         <div className="turn-flow" aria-label="本回合任务触发牌">
-          <p className="eyebrow">任务触发</p>
-          {taskPlan.taskButtons.map((task) => (
+          <p className="eyebrow">
+            任务触发{beijingEncounter ? ` / ${beijingEncounter.encounterLabel}` : ''}
+          </p>
+          {beijingEncounter && (
+            <div className="turn-flow-note">
+              <strong>{beijingEncounter.encounterTitle}</strong>
+              <small>{beijingEncounter.encounterNote}</small>
+            </div>
+          )}
+          {taskButtons.map((task) => (
             <div className="turn-flow-item" key={`${task.kind}-${task.label}`}>
               <strong>{cityPack.tasks.taskKindLabels[task.kind]} / {task.label}</strong>
               <small>{cityPack.cards.getGameCards(task.triggerCardIds).map((card) => card.name).join('、')}</small>

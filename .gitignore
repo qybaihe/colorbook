@@ -10,11 +10,20 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+*.local
+.cache
+public/generated
+
+# Local generated artifacts
 release
 release-mobile
+backups/
+output/
+tmp/
+.playwright-cli/
 build/ico-sizes/
 build/icon.iconset/
-*.local
+*.png.tmp
 
 # Editor directories and files
 .vscode/*
@@ -26,10 +35,3 @@ build/icon.iconset/
 *.njsproj
 *.sln
 *.sw?
-
-# Local generated artifacts
-backups/
-output/
-.playwright-cli/
-tmp/
-*.png.tmp

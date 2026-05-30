@@ -1,25 +1,48 @@
 import type { CSSProperties } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import { CheckCircle2, ChevronLeft, ImageUp, MessageSquareText, Mic2 } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, Compass, Dice6, ImageUp, MessageSquareText, Mic2, Stamp } from 'lucide-react'
 import { RewardCards } from '../components/CardHand'
 import type { RouteNode } from '../data/beijingGame'
 import { useCityPack } from '../data/cityPackRuntime'
+import type { TaskButtonKind, TaskButtonPlan } from '../data/taskPlans'
+import { buildShuffledTaskButtons } from '../utils/beijingTheater'
+
+const taskKindIcons: Record<TaskButtonKind, LucideIcon> = {
+  photo: ImageUp,
+  sound: Mic2,
+  dice: Dice6,
+  fate: Compass,
+  create: Stamp,
+  echo: MessageSquareText,
+}
 
 export function MissionScreen({
   node,
   memoryLine,
+  playthroughSeed,
   onBack,
   onMemoryChange,
   onComplete,
 }: {
   node: RouteNode
   memoryLine: string
+  playthroughSeed: string
   onBack: () => void
   onMemoryChange: (value: string) => void
   onComplete: () => void
 }) {
   const cityPack = useCityPack()
   const scene = cityPack.scenes.getNodeSceneMeta(node.id)
+  const taskPlan = cityPack.tasks.getNodeTaskPlan(node.id)
+  const fallbackTasks: TaskButtonPlan[] = [
+    { kind: 'photo', label: '拍照观察', helper: node.photoPrompt, triggerCardIds: node.rewardCardIds.slice(0, 2) },
+    { kind: 'sound', label: '市声记录', helper: '可用 10 秒城市声音替代。', triggerCardIds: node.rewardCardIds.slice(0, 2) },
+    { kind: 'echo', label: '留下回声', helper: `想交给${cityPack.chapter.city}的一句话。`, triggerCardIds: node.rewardCardIds.slice(0, 2) },
+  ]
+  const baseTaskButtons = taskPlan?.taskButtons ?? fallbackTasks
+  const taskButtons = cityPack.id === 'beijing'
+    ? buildShuffledTaskButtons(baseTaskButtons, playthroughSeed, node.id)
+    : baseTaskButtons
 
   return (
     <section className="screen scene-mission-screen" style={{ '--scene-accent': node.accent } as CSSProperties}>
@@ -45,14 +68,20 @@ export function MissionScreen({
 
         <section className="scene-mission-scroll" aria-label="现实任务卡阵">
           <div className="scene-mission-scroll-header">
-            <p className="eyebrow">完成任意一项即可领牌</p>
-            <h2>现场证据回传</h2>
+            <p className="eyebrow">完成任意一项即可领牌 / {taskButtons.length} 项可选</p>
+            <h2>{taskPlan?.summary ?? '现场证据回传'}</h2>
           </div>
 
           <div className="scene-task-cards">
-            <TaskCard icon={ImageUp} title="拍照观察" text={node.photoPrompt} />
-            <TaskCard icon={Mic2} title="市声记录" text="可用 10 秒城市声音替代。" />
-            <TaskCard icon={MessageSquareText} title="留下回声" text={`想交给${cityPack.chapter.city}的一句话。`} />
+            {taskButtons.map((task) => (
+              <TaskCard
+                icon={taskKindIcons[task.kind]}
+                key={`${task.kind}-${task.label}`}
+                title={`${cityPack.tasks.taskKindLabels[task.kind]} / ${task.label}`}
+                text={task.helper}
+                cards={cityPack.cards.getGameCards(task.triggerCardIds).map((card) => card.name)}
+              />
+            ))}
           </div>
 
           <label className="scene-echo-note" htmlFor="memoryLine">
@@ -96,10 +125,12 @@ function TaskCard({
   icon: Icon,
   title,
   text,
+  cards,
 }: {
   icon: LucideIcon
   title: string
   text: string
+  cards: string[]
 }) {
   return (
     <article className="task-card">
@@ -109,6 +140,7 @@ function TaskCard({
       <div className="task-card-info">
         <strong>{title}</strong>
         <span>{text}</span>
+        {cards.length > 0 && <em>{cards.join('、')}</em>}
       </div>
     </article>
   )
